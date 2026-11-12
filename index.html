@@ -113,8 +113,8 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
 #halo{position:absolute;left:calc(var(--c) * -20);top:calc(var(--c) * -20);width:calc(var(--c) * 104);height:calc(var(--c) * 76);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
 /* the animated logo: 64 x 64 cells, 12 / 8 / 5 px per cell */
 #logo{position:absolute;left:0;top:0;width:var(--S);height:calc(var(--S) * 76 / 64);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
-/* the line under the sun reaches below the stage: keep the usual gap before the paragraph */
-.stage{margin-bottom:calc(var(--c) * 9 - 36px)}
+/* the line under the sun reaches below the stage: keep a clear gap (28px) between the end of the line and the paragraph */
+.stage{margin-bottom:calc(var(--c) * 9 - 8px)}
 /* the cut-out strip: base state is the finished look; with JS the strip is hidden until the build-up has finished */
 .band{position:absolute;left:0;right:0;top:calc(50% - var(--G) / 2);height:var(--G);background:color-mix(in srgb,var(--field-bg) 94%,transparent)}
 .edge{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand) 14%,var(--brand) 86%,transparent);opacity:.7}
