@@ -1,322 +1,541 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="sunrise">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sunshine OS</title>
 <meta name="description" content="Sunshine OS: an Arch-based operating system for terminal and desktop, with btrfs snapshots, system repair tools and a Hyprland desktop.">
+<meta property="og:site_name" content="Sunshine OS">
+<meta property="og:title" content="Sunshine OS">
+<meta property="og:description" content="An Arch-based operating system for terminal and desktop, with btrfs snapshots, system repair tools and a Hyprland desktop.">
 <meta name="theme-color" content="#0e0a1a">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+try{var t=localStorage.getItem("sunshine-theme");if(["sunrise","noon","ember","dusk","midnight"].indexOf(t)>-1)document.documentElement.dataset.theme=t}catch(e){}
+</script>
 <style>
-:root, [data-theme="sunrise"] {
-  --bg:#0e0a1a; --bg2:#151024; --fg:#f3e6d0; --dim:#a39888; --line:#2e2342; --line2:#473763;
-  --accent:#ffb12e; --accent2:#ff7a2f; --on-accent:#1a1020;
+:root,[data-theme="sunrise"]{
+  --bg:#0e0a1a;--bg-deep:#090612;--surface:#151024;--surface-2:#1e1731;--border-subtle:#261c3b;--border-strong:#3d2f5a;
+  --text:#f3e6d0;--text-secondary:#c9bba7;--text-muted:#8f8374;--brand:#ffb12e;--brand-ink:#1a1020;
+  --field-bg:#0b0816;--crest:#fff2b8;--hover:#ffd25c;--lit:#ffb12e;--mid:#ff8a3a;--dim:#d9531e;--ok:#8fd16a;
 }
-[data-theme="noon"]     { --bg:#efe9da; --bg2:#e6dec9; --fg:#241a0c; --dim:#6f6247; --line:#cfc3a3; --line2:#a89b78; --accent:#d97706; --accent2:#c2410c; --on-accent:#fff7e6; }
-[data-theme="ember"]    { --bg:#120a08; --bg2:#1b0f0b; --fg:#f4dccf; --dim:#a38a7c; --line:#3a1d15; --line2:#5c2f22; --accent:#ff6a2b; --accent2:#ffb12e; --on-accent:#1a0a06; }
-[data-theme="dusk"]     { --bg:#150e28; --bg2:#1d1536; --fg:#f0dcea; --dim:#a493b6; --line:#35285a; --line2:#503f80; --accent:#ff8fa3; --accent2:#ffc14d; --on-accent:#1a1030; }
-[data-theme="midnight"] { --bg:#060a18; --bg2:#0b1226; --fg:#e8dfc4; --dim:#8c92a8; --line:#1b2544; --line2:#2d3b6a; --accent:#f3c55a; --accent2:#7aa2ff; --on-accent:#0a0f20; }
-
+[data-theme="noon"]{
+  --bg:#f4eedd;--bg-deep:#ebe3cd;--surface:#fbf7ea;--surface-2:#efe7d0;--border-subtle:#ddd1b0;--border-strong:#b9a97c;
+  --text:#241a0c;--text-secondary:#5c4d30;--text-muted:#85764f;--brand:#c96a00;--brand-ink:#fff7e6;
+  --field-bg:#efe8d4;--crest:#e89a1a;--hover:#d97f00;--lit:#c96a00;--mid:#a8500a;--dim:#8a3a0a;--ok:#2f7d1f;
+}
+[data-theme="ember"]{
+  --bg:#120a08;--bg-deep:#0c0605;--surface:#1b0f0b;--surface-2:#26150f;--border-subtle:#32190f;--border-strong:#573021;
+  --text:#f4dccf;--text-secondary:#c7a999;--text-muted:#8f7366;--brand:#ff6a2b;--brand-ink:#1a0a06;
+  --field-bg:#0e0706;--crest:#ffd2a8;--hover:#ffa066;--lit:#ff6a2b;--mid:#e0481a;--dim:#a8300f;--ok:#8fd16a;
+}
+[data-theme="dusk"]{
+  --bg:#150e28;--bg-deep:#0f0a1e;--surface:#1d1536;--surface-2:#271c46;--border-subtle:#30245a;--border-strong:#4b3b80;
+  --text:#f0dcea;--text-secondary:#c3adc4;--text-muted:#8d7ba0;--brand:#ff8fa3;--brand-ink:#1a1030;
+  --field-bg:#110b22;--crest:#ffe0b0;--hover:#ffc14d;--lit:#ff8fa3;--mid:#d96a9a;--dim:#8f4fa8;--ok:#8fd16a;
+}
+[data-theme="midnight"]{
+  --bg:#060a18;--bg-deep:#04070f;--surface:#0b1226;--surface-2:#111b36;--border-subtle:#17213f;--border-strong:#2a3866;
+  --text:#e8dfc4;--text-secondary:#b4b3a8;--text-muted:#7b819a;--brand:#f3c55a;--brand-ink:#0a0f20;
+  --field-bg:#050813;--crest:#fff0b8;--hover:#f3c55a;--lit:#c9b46a;--mid:#7aa2ff;--dim:#4a68c8;--ok:#8fd16a;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font:400 16px/1.65 Geist,system-ui,sans-serif;transition:background .35s,color .35s;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font:400 16px/1.5 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background-color .3s,color .3s;min-height:100dvh}
 a{color:inherit}
-.mono,h1,h2,h3,nav,.btn,.themes,.tabs,.note,.pill,figcaption,.n,.stat b,.num,kbd,pre,code,.inl,footer h4{font-family:"JetBrains Mono",ui-monospace,monospace}
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
 img{max-width:100%;display:block}
+.mono,code,kbd,pre,time,.pill,.btn,.tl,.themes button,.tabs button,.n{font-family:"JetBrains Mono",ui-monospace,monospace}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;transform:translateY(-120%);background:var(--bg);color:var(--text);padding:8px 12px;font-size:14px;z-index:60;text-decoration:underline}
+.skip:focus{transform:translateY(16px)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .pixel{image-rendering:pixelated;image-rendering:crisp-edges}
 @keyframes rise{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
+@keyframes blink{0%,70%,100%{opacity:1}85%{opacity:0}}
 
 /* nav */
-nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;gap:26px;height:56px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;text-decoration:none;letter-spacing:-.01em}
-.brand img{width:26px;height:26px}
-nav .links{display:flex;gap:22px;font-size:14px;color:var(--dim)}
-nav .links a{text-decoration:none}
-nav .links a:hover{color:var(--fg)}
-nav .sp{flex:1}
-nav .ico{display:flex;color:var(--dim)} nav .ico:hover{color:var(--fg)}
-.btn{display:inline-flex;align-items:center;gap:9px;padding:10px 18px;border:1px solid var(--accent);font-weight:500;font-size:14px;text-decoration:none;cursor:pointer;background:none;color:var(--fg);transition:background .15s,color .15s,border-color .15s}
-.btn.primary{background:var(--accent);color:var(--on-accent)}
-.btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
-.btn.ghost{border-color:var(--line2)}
-.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
-nav .btn{padding:6px 14px}
-.themebtn{font:500 12px "JetBrains Mono",monospace;background:none;color:var(--dim);border:1px solid var(--line);padding:5px 9px;cursor:pointer}
-.themebtn:hover{color:var(--fg);border-color:var(--line2)}
-@media(max-width:820px){nav .links{display:none}}
-.brand{white-space:nowrap}
-@media(max-width:480px){nav .ico{display:none}nav .wrap{gap:14px}}
+header.nav{position:sticky;top:0;z-index:40;border-bottom:1px solid transparent;background:transparent;transition:background-color .2s,border-color .2s,backdrop-filter .2s}
+header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom-color:var(--border-subtle)}
+.navin{max-width:72rem;margin:0 auto;height:56px;display:flex;align-items:center;gap:12px;padding:0 16px}
+@media(min-width:640px){.navin{padding:0 24px}}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:500 15px "JetBrains Mono",monospace}
+.brand img{width:24px;height:24px}
+.navlinks{display:none;align-items:center;margin-left:8px}
+@media(min-width:768px){.navlinks{display:flex}}
+.navlinks a{padding:6px 12px;font-size:14px;white-space:nowrap;color:var(--text-secondary);text-decoration:none;transition:background-color .15s}
+.navlinks a:hover{background:var(--surface-2);color:var(--text)}
+.navr{margin-left:auto;display:flex;align-items:center;gap:6px}
+.ib{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;color:var(--text-secondary);background:none;border:0;cursor:pointer;transition:background-color .15s,transform .15s}
+.ib:hover{background:var(--surface-2);color:var(--text)}
+.ib:active{transform:scale(.96)}
+.ib svg{width:20px;height:20px}
+.hide-s{display:none}
+@media(min-width:768px){.hide-s{display:inline-flex}.menu-b{display:none}}
+.navr .btn{margin-left:8px;height:32px;padding:0 16px;font-size:14px}
+#menu{display:none;position:absolute;left:0;right:0;top:56px;background:color-mix(in srgb,var(--bg) 96%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-subtle)}
+#menu.open{display:block}
+#menu nav{max-width:72rem;margin:0 auto;padding:8px 16px;display:flex;flex-direction:column}
+#menu a,#menu button{padding:12px 0;font-size:15px;color:var(--text-secondary);text-decoration:none;text-align:left;background:none;border:0;cursor:pointer;font-family:Geist,sans-serif}
+@media(min-width:768px){#menu{display:none!important}}
+
+/* buttons / links */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 20px;font-size:15px;font-weight:500;border:1px solid transparent;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color .15s,border-color .15s,color .15s,transform .15s}
+.btn:active{transform:scale(.97)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{background:color-mix(in srgb,var(--brand) 86%,white)}
+.btn.secondary{background:var(--surface);color:var(--text);border-color:var(--border-strong)}
+.btn.secondary:hover{background:var(--surface-2)}
+.tl{display:inline-flex;align-items:center;gap:8px;min-height:40px;font-size:14px;font-weight:500;color:var(--text);text-decoration:underline;text-underline-offset:4px;transition:color .15s;white-space:nowrap}
+.tl:hover{color:var(--brand)}
+.tl svg{width:20px;height:20px}
+.ln{color:var(--text-secondary);text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:4px;transition:color .15s,text-decoration-color .15s}
+.ln:hover{color:var(--text);text-decoration-color:var(--brand)}
 
 /* hero */
-.hero{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 0 80px;overflow:hidden}
-#px{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(transparent,var(--bg));z-index:1;pointer-events:none}
-.hero .in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 24px;width:100%}
-.hero .in>*{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
-.hero .in>:nth-child(2){animation-delay:.1s}.hero .in>:nth-child(3){animation-delay:.2s}.hero .in>:nth-child(4){animation-delay:.3s}.hero .in>:nth-child(5){animation-delay:.4s}
-.pill{display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border:1px solid var(--line2);background:color-mix(in srgb,var(--bg) 80%,transparent);font-size:13px;color:var(--dim);text-decoration:none}
-.pill:hover{color:var(--fg);border-color:var(--accent)}
-.stage{position:relative;width:100%;height:768px;display:flex;justify-content:center;margin:0 0 24px}
-.hlogo{position:relative;z-index:1;width:768px;height:768px}
-#wm{display:none}
-@media(max-width:1180px){.stage,.hlogo{height:512px}.hlogo{width:512px}}
-@media(max-width:760px){.stage,.hlogo{height:320px}.hlogo{width:320px}}
-.hero h1{font-size:clamp(22px,3.4vw,34px);font-weight:500;letter-spacing:-.02em;line-height:1.25;text-wrap:balance}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p.tag{margin:0 0 30px;color:var(--dim);font:400 15px/1.75 "JetBrains Mono",monospace;max-width:620px;text-wrap:balance}
-.hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero{position:relative;margin-top:-56px;padding-top:56px;min-height:min(100svh,1100px);display:flex;flex-direction:column;overflow:hidden;border-bottom:1px solid var(--border-subtle);background:var(--field-bg)}
+#px,#fpx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .col{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 72px;text-align:center}
+.hero .col>*{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.hero .col>:nth-child(2){animation-delay:.05s}.hero .col>:nth-child(3){animation-delay:.9s}.hero .col>:nth-child(4){animation-delay:1.05s}.hero .col>:nth-child(5){animation-delay:1.2s}
+.pill{display:inline-flex;max-width:100%;align-items:center;gap:8px;border:1px solid color-mix(in srgb,var(--brand) 40%,transparent);background:color-mix(in srgb,var(--bg) 60%,transparent);padding:6px 14px;font-size:13px;line-height:1.4;color:var(--brand);text-decoration:none;transition:color .15s,background-color .15s,border-color .15s;margin-bottom:28px}
+.pill:hover{background:var(--brand);color:var(--bg);border-color:var(--brand)}
+.pill svg{width:16px;height:16px;flex:none}
+.pill[hidden]{display:none}
+.stage{--S:768px;--G:128px;position:relative;width:var(--S);max-width:100%;height:calc(var(--S) + var(--G))}
+@media(max-width:1180px){.stage{--S:512px;--G:96px}}
+@media(max-width:760px){.stage{--S:320px;--G:64px}}
+.half{position:absolute;left:0;width:var(--S);height:var(--S)}
+.half.top{top:0;clip-path:inset(0 0 50% 0);animation:opT 1.25s .35s cubic-bezier(.65,0,.2,1) both}
+.half.bot{bottom:0;clip-path:inset(50% 0 0 0);animation:opB 1.25s .35s cubic-bezier(.65,0,.2,1) both}
+@keyframes opT{from{transform:translateY(calc(var(--G) / 2))}}
+@keyframes opB{from{transform:translateY(calc(var(--G) / -2))}}
+.edge{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand) 18%,var(--brand) 82%,transparent);opacity:.55;transform-origin:center;animation:edge 1s .5s cubic-bezier(.2,.7,.2,1) both}
+.edge.e1{top:calc(var(--S) / 2)}
+.edge.e2{top:calc(var(--S) / 2 + var(--G))}
+@keyframes edge{from{transform:scaleX(0);opacity:0}60%{opacity:1}}
+#wm{position:absolute;left:50%;transform:translateX(-50%)}
+.hero p.d{margin-top:36px;max-width:40rem;color:var(--text-secondary);font-size:15px;line-height:1.75;text-wrap:balance}
+.cta{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 
 /* sections */
-section{padding:92px 0;border-top:1px solid var(--line)}
-h2{font-size:clamp(24px,3.4vw,34px);font-weight:500;letter-spacing:-.025em;line-height:1.2;margin-bottom:14px}
-h2 .slash{color:var(--accent)}
-.lead{color:var(--dim);font-size:17px;max-width:680px;text-wrap:pretty}
-.huge{font:500 clamp(30px,5.4vw,58px)/1.08 "JetBrains Mono",monospace;letter-spacing:-.04em;margin-bottom:26px}
-.huge span{color:var(--accent)}
-.quote{margin:36px 0 0;padding-left:18px;border-left:2px solid var(--accent);font-size:18px;max-width:640px}
-.quote small{display:block;margin-top:8px;color:var(--dim);font:400 12.5px "JetBrains Mono",monospace}
-.grid{display:grid;gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line)}
-.g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
-@media(max-width:860px){.g3,.g2{grid-template-columns:1fr}}
-.card{background:var(--bg);padding:28px;transition:background .2s}
-.card:hover{background:var(--bg2)}
-.card .n{font-size:12px;color:var(--accent);margin-bottom:14px}
-.card h3{font-size:16px;font-weight:500;letter-spacing:-.01em;margin-bottom:8px}
-.card p{color:var(--dim);font-size:15px;line-height:1.6}
-.card code,.inl{font-size:13px;color:var(--accent)}
-.shot{background:var(--bg)}
-.shot figcaption{padding:11px 16px;font-size:12px;color:var(--dim);border-top:1px solid var(--line)}
-.rv{opacity:0}.rv.in{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+[hidden]{display:none!important}
+.sec{border-top:1px solid var(--border-subtle)}
+.sec.deep{background:var(--bg-deep)}
+.sec:first-of-type{border-top:0}
+.inner{max-width:72rem;margin:0 auto;padding:48px 16px}
+@media(min-width:640px){.inner{padding-left:24px;padding-right:24px}}
+@media(min-width:1024px){.inner{padding-top:96px;padding-bottom:96px}}
+.head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px}
+.head .t{max-width:36rem}
+h2.h{font-size:24px;font-weight:600;letter-spacing:-.025em;line-height:1.25;text-wrap:balance}
+@media(min-width:640px){h2.h{font-size:28px}}
+h2.h a{color:inherit;text-decoration:none}
+.sub{margin-top:8px;font-size:15px;line-height:1.625;color:var(--text-secondary);text-wrap:pretty}
+.head .more{display:none;flex:none}
+@media(min-width:640px){.head .more{display:block}}
+.mt6{margin-top:24px}@media(min-width:1024px){.mt6{margin-top:40px}}
+.cols3{display:grid;gap:24px}
+@media(min-width:768px){.cols3{grid-template-columns:repeat(3,1fr);gap:32px}}
+.blk{min-width:0;display:flex;flex-direction:column;border-top:1px solid var(--border-strong);padding-top:16px}
+.blk h3{font-size:18px;font-weight:500;letter-spacing:-.01em}
+.blk p{margin-top:12px;font-size:15px;line-height:1.625;color:var(--text-secondary);text-wrap:pretty}
+.blk .tl{margin-top:auto;align-self:flex-start;padding-top:16px}
+code{font-size:.9em;color:var(--brand)}
+kbd{border:1px solid var(--border-strong);padding:2px 6px;font-size:11px;color:var(--text-secondary)}
 
-/* themes list */
-.themes{margin-top:30px;columns:2;column-gap:40px;font-size:19px;font-weight:500;max-width:480px}
-.themes button{all:unset;display:block;cursor:pointer;padding:5px 0;color:var(--dim);break-inside:avoid;font-family:"JetBrains Mono",monospace}
-.themes button:hover,.themes button.on{color:var(--accent)}
-.themes button::after{content:"/";color:var(--line2)}
-.themes button.on::after{color:var(--accent)}
-.note{margin-top:18px;color:var(--dim);font-size:13px}
-kbd{font-size:12px;border:1px solid var(--line2);padding:1px 7px;background:var(--bg2);color:var(--fg)}
+/* about */
+.about{display:grid;gap:32px}
+@media(min-width:1024px){.about{grid-template-columns:1.35fr 1fr;gap:80px}}
+.about h2{font-size:24px;font-weight:600;letter-spacing:-.025em;line-height:1.25;text-wrap:balance}
+@media(min-width:640px){.about h2{font-size:28px}}
+.about p{margin-top:20px;max-width:35.5rem;font-size:15px;line-height:1.625;color:var(--text-secondary);text-wrap:pretty}
+.about h2+p{margin-top:24px}
+.caret{display:inline-block;width:.5ch;height:1.05em;background:var(--brand);vertical-align:-.15em;margin-left:2px;animation:blink 1.1s steps(1) infinite}
+.quote{max-width:28rem;border:1px solid var(--border-subtle);background:var(--surface);padding:20px;transition:border-color .15s;align-self:center;justify-self:end}
+@media(min-width:1024px){.quote{padding:28px}}
+.quote:hover{border-color:var(--border-strong)}
+.quote .qm{height:40px;font-size:60px;line-height:1;font-weight:700;color:var(--brand)}
+.quote blockquote{font-size:20px;line-height:1.35;font-weight:500;text-wrap:balance}
+.quote figcaption{margin-top:24px;display:flex;align-items:center;gap:14px}
+.quote figcaption img{width:48px;height:48px;border:1px solid var(--border-subtle);background:var(--bg-deep);padding:4px}
+.quote figcaption span{display:flex;flex-direction:column;font-family:"JetBrains Mono",monospace;line-height:1.4}
+.quote figcaption b{font-size:15px;font-weight:500}
+.quote figcaption small{font-size:13px;color:var(--text-muted)}
+
+/* look */
+.shots{display:grid;gap:16px}
+@media(min-width:768px){.shots{grid-template-columns:1fr 1fr}}
+.shot{position:relative;margin:0}
+.shot img{width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--border-subtle)}
+.shot figcaption{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 18px;background:linear-gradient(to top,rgb(0 0 0/.7),transparent);color:#fff}
+.shot figcaption b{display:block;font-size:16px;font-weight:500}
+.shot figcaption span{font:400 13px "JetBrains Mono",monospace;color:rgb(255 255 255/.7)}
+
+/* install */
+.rows{margin-top:32px;border-bottom:1px solid var(--border-subtle)}
+@media(min-width:1024px){.rows{margin-top:48px}}
+.row{display:grid;gap:16px;border-top:1px solid var(--border-subtle);padding:32px 0}
+@media(min-width:768px){.row{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:32px;align-items:start}}
+@media(min-width:1024px){.row{gap:40px}}
+.row h4{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:500;letter-spacing:-.01em}
+.row h4 svg{width:20px;height:20px;color:var(--brand);flex:none}
+.row .d{margin-top:12px;max-width:28rem;font-size:15px;line-height:1.625;color:var(--text-secondary);text-wrap:pretty}
+.row .m{margin-top:8px;max-width:28rem;font-size:13px;line-height:1.6;color:var(--text-muted)}
+.dl{display:flex;flex-direction:column;align-items:flex-start}
+.dl .btn{height:44px}
+.dl .sm{margin-top:8px;display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--text-muted)}
+.dl .sm a{color:var(--text-muted);text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:4px}
+.dl .sm a:hover{color:var(--text);text-decoration-color:var(--brand)}
+pre.code{max-width:100%;padding:14px 16px;background:var(--surface);border:1px solid var(--border-subtle);font:400 13px/1.7 "JetBrains Mono",monospace;overflow-x:auto;white-space:pre;color:var(--text)}
+#parts{margin-top:16px;font-size:14px;color:var(--text-secondary)}
+#parts ul{margin:8px 0 12px 18px}
+#parts[hidden]{display:none}
 
 /* terminal */
-.tabs{display:flex;gap:8px;margin:30px 0 0;flex-wrap:wrap}
-.tabs button{font:500 13px "JetBrains Mono",monospace;padding:8px 14px;border:1px solid var(--line2);background:none;color:var(--dim);cursor:pointer}
-.tabs button:hover{color:var(--fg)}
-.tabs button.on{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
-.term2{margin-top:12px;border:1px solid var(--line2);background:var(--bg2)}
-.term2 .bar{display:flex;gap:7px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);font:400 12px "JetBrains Mono",monospace;color:var(--dim)}
-.term2 .bar i{width:9px;height:9px;background:var(--line2);display:inline-block}
-.term2 pre{margin:0;padding:20px 22px;min-height:440px;font:400 14px/1.7 "JetBrains Mono",monospace;white-space:pre-wrap;overflow-x:auto}
-.term2 pre::after{content:"";display:inline-block;width:.6em;height:1.1em;background:var(--accent);vertical-align:-.2em;animation:blink 1.1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.term2 .p{color:var(--accent)} .term2 .ok{color:#8fd16a} .term2 .wn{color:var(--accent)} .term2 .sec{color:var(--fg);font-weight:700} .term2 .d{color:var(--dim)}
-:root[data-theme="noon"] .term2 .ok{color:#2f7d1f}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.tabs button{font-size:13px;font-weight:500;padding:8px 14px;border:1px solid var(--border-strong);background:none;color:var(--text-secondary);cursor:pointer}
+.tabs button:hover{color:var(--text)}
+.tabs button.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.term2{margin-top:12px;border:1px solid var(--border-strong);background:var(--surface)}
+.term2 .bar{display:flex;gap:7px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border-subtle);font:400 12px "JetBrains Mono",monospace;color:var(--text-muted)}
+.term2 .bar i{width:9px;height:9px;background:var(--border-strong);display:inline-block}
+.term2 pre{padding:20px 22px;min-height:440px;font:400 14px/1.7 "JetBrains Mono",monospace;white-space:pre-wrap;overflow-x:auto}
+.term2 pre::after{content:"";display:inline-block;width:.6em;height:1.1em;background:var(--brand);vertical-align:-.2em;animation:blink 1.1s steps(1) infinite}
+.term2 .p{color:var(--brand)}.term2 .ok{color:var(--ok)}.term2 .wn{color:var(--brand)}.term2 .sec{font-weight:700}.term2 .d{color:var(--text-muted)}
+.cmds{display:grid;gap:0 32px;margin-top:32px;border-top:1px solid var(--border-subtle)}
+@media(min-width:768px){.cmds{grid-template-columns:1fr 1fr}}
+.cmd{padding:16px 0;border-bottom:1px solid var(--border-subtle)}
+.cmd b{font:500 14px "JetBrains Mono",monospace;color:var(--brand)}
+.cmd p{margin-top:4px;font-size:14px;line-height:1.6;color:var(--text-secondary)}
 
-/* stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line)}
-@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:500px){.stats{grid-template-columns:1fr}}
-.cmds{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}
-.cmd2{background:var(--bg);padding:18px 22px}
-.cmd2 p{color:var(--dim);font-size:14px;margin-top:4px}
-.cmd2 code{font-size:12.5px;color:var(--accent)}
-@media(max-width:760px){.cmds{grid-template-columns:1fr}}
-.stat{background:var(--bg);padding:28px}
-.stat b{display:block;font-size:clamp(28px,3.6vw,44px);font-weight:500;letter-spacing:-.05em;color:var(--accent);line-height:1;margin-bottom:10px}
-.stat span{color:var(--dim);font-size:14px}
+/* themes */
+.palette{display:flex;height:72px;margin-top:24px;border:1px solid var(--border-subtle);max-width:36rem}
+.palette i{flex:1}
+.themes{margin-top:20px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;font-size:14px;line-height:1.7}
+.themes li{list-style:none;display:inline-flex;align-items:baseline;gap:8px}
+.themes button{background:none;border:0;cursor:pointer;font-size:14px;color:var(--text-secondary);text-underline-offset:4px}
+.themes button:hover{color:var(--text);text-decoration:underline}
+.themes button.on{color:var(--brand)}
+.themes span{color:var(--text-muted)}
 
-/* steps */
-.steps{display:grid;gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line)}
-.step{display:grid;grid-template-columns:56px 1fr;gap:18px;background:var(--bg);padding:28px}
-.step .num{font-size:13px;color:var(--accent);padding-top:3px}
-.step h3{font-size:17px;font-weight:500;letter-spacing:-.01em;margin-bottom:8px}
-.step p{color:var(--dim);font-size:15px;margin-bottom:12px}
-.step ul{margin:0 0 12px 18px;color:var(--dim);font-size:14px}
-pre.code{margin:10px 0 0;padding:14px 16px;background:var(--bg2);border:1px solid var(--line);font:400 13px/1.6 "JetBrains Mono",monospace;overflow-x:auto;white-space:pre}
-@media(max-width:600px){.step{grid-template-columns:1fr}}
+/* releases */
+.news{margin-top:24px;display:grid;border-top:1px solid var(--border-subtle)}
+@media(min-width:1024px){.news{margin-top:32px}}
+@media(min-width:640px){.news{grid-template-columns:1fr 1fr;column-gap:40px}}
+.news li{list-style:none;border-bottom:1px solid var(--border-subtle)}
+.news a{display:flex;flex-direction:column;gap:6px;height:100%;padding:20px 0;text-decoration:none}
+.news time{font-size:12px;color:var(--text-muted)}
+.news .ti{font-size:16px;font-weight:500;transition:color .15s}
+.news a:hover .ti{color:var(--brand)}
+.news .ex{font-size:13px;line-height:1.6;color:var(--text-secondary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-footer{border-top:1px solid var(--line);padding:56px 0 76px;color:var(--dim);font-size:14px}
-footer .cols{display:flex;flex-wrap:wrap;gap:60px;margin-top:28px}
-footer h4{color:var(--fg);font-size:13px;font-weight:500;margin-bottom:10px}
-footer a{display:block;text-decoration:none;padding:2px 0}
-footer a:hover{color:var(--accent)}
+/* figures */
+.figs{display:grid;gap:16px}
+@media(min-width:640px){.figs{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.figs{grid-template-columns:repeat(4,1fr)}}
+.fig{display:flex;flex-direction:column;background:var(--surface);padding:24px;box-shadow:0 0 0 1px var(--border-subtle);transition:box-shadow .15s}
+.fig:hover{box-shadow:0 0 0 1px var(--border-strong)}
+.fig svg{width:20px;height:20px;color:var(--brand)}
+.fig b{display:block;margin-top:16px;font-size:30px;font-weight:600;letter-spacing:-.025em;line-height:1.1;font-variant-numeric:tabular-nums}
+.fig span{margin-top:4px;font-size:14px;color:var(--text-secondary)}
+.fig a{margin-top:auto;align-self:flex-start;padding-top:16px;font-size:13px;font-weight:500;color:var(--brand);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:text-decoration-color .15s}
+.fig a:hover{text-decoration-color:var(--brand)}
+
+/* specs */
+.spec{border-top:1px solid var(--border-subtle)}
+.srow{display:grid;gap:4px;padding:18px 0;border-bottom:1px solid var(--border-subtle)}
+@media(min-width:768px){.srow{grid-template-columns:200px 1fr;gap:32px}}
+.srow dt{font:500 13px "JetBrains Mono",monospace;color:var(--brand);padding-top:2px}
+.srow dd{font-size:15px;line-height:1.65;color:var(--text-secondary);max-width:46rem}
+.cols3>.rv:nth-child(3n+2).in,.spec>.rv:nth-child(2n).in{animation-delay:.08s}
+.cols3>.rv:nth-child(3n+3).in{animation-delay:.16s}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.45s}
+/* footer */
+footer{position:relative;isolation:isolate;overflow:hidden;border-top:1px solid var(--border-subtle);background:var(--field-bg)}
+footer .in{position:relative;max-width:72rem;margin:0 auto;padding:56px 16px}
+@media(min-width:640px){footer .in{padding-left:24px;padding-right:24px}}
+footer .top{display:flex;flex-direction:column;gap:40px}
+@media(min-width:1024px){footer .top{flex-direction:row;justify-content:space-between}}
+footer .about2{max-width:24rem}
+footer .about2 p{margin-top:16px;font-size:14px;line-height:1.625;color:var(--text-muted)}
+footer .fcols{display:grid;grid-template-columns:repeat(2,1fr);gap:40px 24px;flex:1;max-width:28rem}
+footer h2{font:400 12px Geist,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+footer ul{margin-top:14px;display:flex;flex-direction:column;gap:10px;list-style:none}
+footer .fl{font-size:14px;color:var(--text-secondary);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:color .15s,text-decoration-color .15s}
+footer .fl:hover{color:var(--brand);text-decoration-color:currentColor}
+footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-subtle);font-size:13px;color:var(--text-muted);display:flex;flex-direction:column;gap:8px}
+@media(min-width:640px){footer .bot{flex-direction:row;justify-content:space-between;align-items:center}}
+
+.rv{opacity:0}.rv.in{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1}}
 </style>
 </head>
-<body data-theme="sunrise">
+<body>
+<a href="#main" class="skip">Skip to content</a>
 
-<nav>
-  <div class="wrap">
+<header class="nav" id="nav">
+  <div class="navin">
     <a class="brand" href="#top"><img class="pixel" src="assets/favicon.png" alt="">Sunshine OS</a>
-    <div class="links">
+    <nav class="navlinks" aria-label="Main">
       <a href="#features">Features</a>
-      <a href="#safety">Tools</a>
+      <a href="#tools">Tools</a>
+      <a href="#specs">Specs</a>
       <a href="#themes">Themes</a>
-      <a href="#install">Install</a>
+      <a href="#releases" class="rl" hidden>Releases</a>
+    </nav>
+    <div class="navr">
+      <button class="ib hide-s" id="cycle" type="button" aria-label="Change website theme" title="Change theme (T)"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.71457 6.51697 2.5 12 2.5C17.483 2.5 22 6.71457 22 12C22 13.8878 21.4937 15.1519 20.4345 15.8123C19.4491 16.4266 18.2002 16.3605 17.1496 16.2236C16.7813 16.1757 16.397 16.1121 16.0307 16.0515C15.8617 16.0235 15.6965 15.9962 15.5384 15.9713C15.0184 15.8895 14.5499 15.8295 14.1335 15.8234C13.298 15.8112 12.8925 16.0091 12.671 16.4526C12.539 16.7171 12.5395 17.0363 12.6858 17.4705C12.8149 17.8538 13.0214 18.2277 13.2435 18.63C13.2828 18.7012 13.3226 18.7734 13.3626 18.8465C13.4857 19.0721 13.6169 19.3217 13.7077 19.5624C13.7926 19.7875 13.8875 20.117 13.8161 20.466C13.7303 20.8858 13.4434 21.1713 13.0891 21.3241C12.7768 21.4588 12.3992 21.5 12 21.5C6.51697 21.5 2 17.2854 2 12ZM10.25 6.25C9.42157 6.25 8.75 6.92157 8.75 7.75C8.75 8.57843 9.42157 9.25 10.25 9.25C11.0784 9.25 11.75 8.57843 11.75 7.75C11.75 6.92157 11.0784 6.25 10.25 6.25ZM7.25 10.5C6.42157 10.5 5.75 11.1716 5.75 12C5.75 12.8284 6.42157 13.5 7.25 13.5C8.07843 13.5 8.75 12.8284 8.75 12C8.75 11.1716 8.07843 10.5 7.25 10.5ZM15.25 7.75C14.4216 7.75 13.75 8.42157 13.75 9.25C13.75 10.0784 14.4216 10.75 15.25 10.75C16.0784 10.75 16.75 10.0784 16.75 9.25C16.75 8.42157 16.0784 7.75 15.25 7.75Z" fill="currentColor"/></svg></button>
+      <a class="ib hide-s" href="https://github.com/tak0dan/SunshineOS" aria-label="Sunshine OS on GitHub"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 1.95068C17.525 1.95068 22 6.42568 22 11.9507C21.9995 14.0459 21.3419 16.0883 20.1198 17.7902C18.8977 19.4922 17.1727 20.768 15.1875 21.4382C14.6875 21.5382 14.5 21.2257 14.5 20.9632C14.5 20.6257 14.5125 19.5507 14.5125 18.2132C14.5125 17.2757 14.2 16.6757 13.8375 16.3632C16.0625 16.1132 18.4 15.2632 18.4 11.4257C18.4 10.3257 18.0125 9.43818 17.375 8.73818C17.475 8.48818 17.825 7.46318 17.275 6.08818C17.275 6.08818 16.4375 5.81318 14.525 7.11318C13.725 6.88818 12.875 6.77568 12.025 6.77568C11.175 6.77568 10.325 6.88818 9.525 7.11318C7.6125 5.82568 6.775 6.08818 6.775 6.08818C6.225 7.46318 6.575 8.48818 6.675 8.73818C6.0375 9.43818 5.65 10.3382 5.65 11.4257C5.65 15.2507 7.975 16.1132 10.2 16.3632C9.9125 16.6132 9.65 17.0507 9.5625 17.7007C8.9875 17.9632 7.55 18.3882 6.65 16.8757C6.4625 16.5757 5.9 15.8382 5.1125 15.8507C4.275 15.8632 4.775 16.3257 5.125 16.5132C5.55 16.7507 6.0375 17.6382 6.15 17.9257C6.35 18.4882 7 19.5632 9.5125 19.1007C9.5125 19.9382 9.525 20.7257 9.525 20.9632C9.525 21.2257 9.3375 21.5257 8.8375 21.4382C6.8458 20.7752 5.11342 19.502 3.88611 17.799C2.65881 16.096 1.9989 14.0498 2 11.9507C2 6.42568 6.475 1.95068 12 1.95068Z" fill="currentColor"/></svg></a>
+      <a class="btn primary hide-s" href="#install">Install</a>
+      <button class="ib menu-b" id="menub" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="2.75" y1="5.75" x2="21.25" y2="5.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><line x1="2.75" y1="12" x2="21.25" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><line x1="2.75" y1="18.25" x2="21.25" y2="18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></button>
     </div>
-    <div class="sp"></div>
-    <button class="themebtn" id="cycle" title="Cycle theme (T)">theme: <span id="tname">sunrise</span></button>
-    <a class="ico" href="https://github.com/tak0dan/SunshineOS" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a>
-    <a class="btn primary" href="#install">Install</a>
   </div>
-</nav>
+  <div id="menu"><nav aria-label="Main pages">
+    <a href="#features">Features</a><a href="#tools">Tools</a><a href="#specs">Specs</a><a href="#themes">Themes</a><a href="#releases" class="rl" hidden>Releases</a>
+    <button type="button" id="cycle2">Change the theme</button>
+    <a href="https://github.com/tak0dan/SunshineOS">GitHub</a>
+    <a href="#install" class="btn primary" style="margin:8px 0 12px;align-self:flex-start;color:var(--brand-ink)">Install</a>
+  </nav></div>
+</header>
 
-<header class="hero" id="top">
+<main id="main">
+<section class="hero" id="top">
   <canvas id="px" aria-hidden="true"></canvas>
-  <div class="in">
-    <div class="stage"><div id="wm" role="img" aria-label="Sunshine OS"></div><img class="hlogo pixel" src="assets/logo-pixel.png" alt="Sunshine OS logo"></div>
-    <p class="tag">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
+  <div class="col">
+    <a class="pill" id="relpill" href="#releases" hidden><span id="relpilltext"></span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
+    <div class="stage" id="stage" role="img" aria-label="Sunshine OS"><img class="half top pixel" src="assets/logo-pixel.png" alt=""><img class="half bot pixel" src="assets/logo-pixel.png" alt=""><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
+    <h1 class="sr-only">Sunshine OS</h1>
+    <p class="d">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
-      <a class="btn primary" href="#install" id="herodl"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>Download</a>
-      <a class="btn ghost" href="https://github.com/tak0dan/SunshineOS"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Source</a>
-    </div>
-  </div>
-  </header>
-
-<section id="about">
-  <div class="wrap">
-    <div class="huge rv">Arch underneath.<br>Configured for <span>daily use.</span></div>
-    <p class="lead rv">Sunshine OS is a standalone Arch-based distribution, built with archiso and installed with Calamares. It is configured to be used from the terminal as well as from a graphical desktop, and it ships with btrfs snapshot support and tools that check and repair the system.</p>
-    <div class="quote rv">Nothing in the build touches the host. The ISO is assembled inside a container.<small>// how Sunshine OS is built</small></div>
-  </div>
-</section>
-
-<section id="features">
-  <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> Features</h2>
-    <p class="lead rv">What is included on top of a base Arch install.</p>
-    <div class="grid g3 rv">
-      <div class="card"><div class="n">01</div><h3>Two environments</h3><p>The live session runs KDE Plasma. The installer adds Hyprland with a Quickshell desktop.</p></div>
-      <div class="card"><div class="n">02</div><h3>Btrfs snapshots</h3><p><code>snapper</code> takes timeline snapshots, <code>snap-pac</code> wraps every package update in a pre and post snapshot, and <code>grub-btrfs</code> lists them as bootable entries in the GRUB menu.</p></div>
-      <div class="card"><div class="n">03</div><h3>System doctor</h3><p><code>sunshine-doctor</code> checks identity, package manager, boot files, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></div>
-      <div class="card"><div class="n">04</div><h3>Boot repair</h3><p><code>sunshine-boot-repair</code> rebuilds the initramfs, checks the kernel image and regenerates GRUB and its menu on an installed system.</p></div>
-      <div class="card"><div class="n">05</div><h3>Package manager repair</h3><p><code>sunshine-fix-pacman</code> clears stale locks, repairs a broken keyring, refreshes stale mirrors and rebuilds damaged databases.</p></div>
-      <div class="card"><div class="n">06</div><h3>Identity guard</h3><p>A plain Arch update would turn the system back into &ldquo;Arch Linux&rdquo;. A pacman hook, <code>sunshine-identity</code>, keeps it Sunshine OS.</p></div>
-      <div class="card"><div class="n">07</div><h3>Sunshine Store</h3><p>One application for pacman, the AUR and Flatpak. Installed packages are marked and sources are color coded.</p></div>
-      <div class="card"><div class="n">08</div><h3>Disk encryption</h3><p>Full-system encryption is one option in the graphical installer, or one question in the text installer. One passphrase at boot, asked by GRUB.</p></div>
-      <div class="card"><div class="n">09</div><h3>Updates</h3><p>A user timer reports available updates. <code>sunshine-update</code> runs them in a terminal with a polkit password prompt.</p></div>
-      <div class="card"><div class="n">10</div><h3>Fish by default</h3><p>Users get fish as their login shell. <code>sunshine-info</code> prints system information to paste when asking for help.</p></div>
-      <div class="card"><div class="n">11</div><h3>Phone and AirPods</h3><p>KDE Connect pairs a phone for files, notifications and clipboard. AirPods report battery for each pod and the case, with noise control.</p></div>
-      <div class="card"><div class="n">12</div><h3>Installers and build</h3><p>Graphical (Calamares) and text installers for UEFI and BIOS, on btrfs or ext4. The ISO is built by <code>./build.sh</code> inside a Docker container, so the host is never modified.</p></div>
+      <a class="btn primary" href="#install"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Download</a>
+      <a class="btn secondary" href="#tools"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 22V2L22 12L5 22Z" fill="currentColor"/></svg>See the tools</a>
     </div>
   </div>
 </section>
 
-<section id="safety">
-  <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> System tools</h2>
-    <p class="lead rv">Commands included for checking and repairing the system. Output captured from a test install.</p>
+<section class="sec" id="about">
+  <div class="inner">
+    <div class="about">
+      <div>
+        <h2 id="typed" data-typed="daily use."><span class="sr-only">Arch underneath. Configured for daily use.</span><span aria-hidden="true">Arch underneath. Configured for <span class="tt"></span><span class="caret"></span></span></h2>
+        <p>Sunshine OS is a standalone Arch-based distribution, built with archiso and installed with Calamares. It is configured to be used from the terminal as well as from a graphical desktop, and it ships with btrfs snapshot support and tools that check and repair the system.</p>
+        <p>The live session runs KDE Plasma. The installer adds Hyprland with a Quickshell desktop. Everything is plain Arch underneath, so pacman, the AUR and the Arch Wiki all apply.</p>
+      </div>
+      <figure class="quote">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <blockquote>Standalone Arch-based distribution, built with archiso inside a container. Nothing here modifies the build host.</blockquote>
+        <figcaption><img class="pixel" src="assets/logo-pixel.png" alt=""><span><b>README.md</b><small>tak0dan/SunshineOS</small></span></figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="sec deep" id="look" style="border-bottom:1px solid var(--border-subtle)">
+    <div class="inner">
+      <div class="head"><div class="t"><h2 class="h"><a href="#look">The look</a></h2><p class="sub">A warm, dark palette by default: gold on deep indigo. The default wallpapers ship with the system.</p></div></div>
+      <div class="shots mt6">
+        <figure class="shot rv"><img src="assets/desktop.jpg" alt="Sunshine OS desktop wallpaper" loading="lazy"><figcaption><b>Desktop wallpaper</b><span>default</span></figcaption></figure>
+        <figure class="shot rv"><img src="assets/login.jpg" alt="Sunshine OS login wallpaper" loading="lazy"><figcaption><b>Login wallpaper</b><span>default</span></figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="install">
+  <div class="inner">
+    <div class="head"><div class="t"><h2 class="h"><a href="#install">Install Sunshine OS</a></h2><p class="sub">Write the ISO to a USB stick and boot it. Nothing on your computer changes until you press Install.</p></div>
+      <div class="more"><a class="tl" href="https://github.com/tak0dan/SunshineOS">Source and build instructions<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a></div></div>
+    <div class="rows">
+      <div class="row">
+        <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 5.75V7.25M14 5.75V7.25M3.75 10.25H20.25V21.25H3.75V10.25ZM5.75 2.75H18.25V10.25H5.75V2.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Download the ISO</h4>
+          <p class="d" id="dlinfo">Looking up the newest release&hellip;</p>
+          <p class="m">UEFI and BIOS systems, installable on btrfs or ext4.</p></div>
+        <div class="dl">
+          <a class="btn primary" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases/latest"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg><span id="dlbtntext">Sunshine OS (x86_64)</span></a>
+          <span class="sm" id="dlsm"></span>
+          <div id="parts" hidden>
+            <p>GitHub limits a single file to 2 GB, so the ISO comes in parts. Download all of them into one folder, then join them:</p>
+            <ul id="partlist"></ul>
+            <pre class="code"># Linux / macOS
+cat sunshineos-*.iso.part* &gt; sunshineos.iso
+sha256sum -c sunshineos-*.iso.sha256
+# Windows (cmd)
+copy /b sunshineos-*.iso.part* sunshineos.iso</pre>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.75" y="3.75" width="16.5" height="12" stroke="currentColor" stroke-width="1.5"/><path d="M8 20.25H16M12 15.75V20.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Write it to a USB stick</h4>
+          <p class="d">Any tool works. On Linux, with <code>dd</code>:</p></div>
+        <div><pre class="code">sudo dd if=sunshineos.iso of=/dev/sdX bs=4M status=progress oflag=sync</pre></div>
+      </div>
+      <div class="row">
+        <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 22V2L22 12L5 22Z" fill="currentColor"/></svg>Boot and install</h4>
+          <p class="d">The Welcome window opens by itself. Choose &ldquo;Install Sunshine OS&rdquo; and pick btrfs to get restore points. Keep the internet connected: the Hyprland desktop is fetched during the install.</p></div>
+        <div><p class="m" style="margin-top:0">A graphical installer (Calamares) and a text installer are included. Full-system encryption is a single option in the graphical installer, or one question in the text one.</p></div>
+      </div>
+      <div class="row">
+        <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5L9 12L4 17.5M11.5 18H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Build it yourself</h4>
+          <p class="d">The ISO is assembled inside a Docker container, so building it never modifies your own system.</p></div>
+        <div><pre class="code">git clone https://github.com/tak0dan/SunshineOS
+cd SunshineOS
+./build.sh</pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec deep" id="features">
+  <div class="inner">
+    <div class="head"><div class="t"><h2 class="h"><a href="#features">What is included</a></h2><p class="sub">What is on top of a base Arch install.</p></div></div>
+    <div class="cols3 mt6" style="row-gap:40px">
+      <div class="blk"><h3>Two environments</h3><p>The live session runs KDE Plasma. The installer adds Hyprland with a Quickshell desktop, with <code>uwsm</code>, <code>hypridle</code> and <code>hyprlock</code> configured.</p></div>
+      <div class="blk"><h3>Btrfs snapshots</h3><p><code>snapper</code> takes timeline snapshots, <code>snap-pac</code> wraps every package update in a pre and post snapshot, and <code>grub-btrfs</code> lists them as bootable entries in the GRUB menu.</p></div>
+      <div class="blk"><h3>System doctor</h3><p><code>sunshine-doctor</code> checks identity, package manager, boot files, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></div>
+      <div class="blk"><h3>Boot repair</h3><p><code>sunshine-boot-repair</code> rebuilds the initramfs, checks the kernel image, and regenerates GRUB and its menu on an installed system.</p></div>
+      <div class="blk"><h3>Package manager repair</h3><p><code>sunshine-fix-pacman</code> clears stale locks, repairs a broken keyring, refreshes stale mirrors and rebuilds damaged databases.</p></div>
+      <div class="blk"><h3>Identity guard</h3><p>A plain Arch update would turn the system back into &ldquo;Arch Linux&rdquo;. A pacman hook, <code>sunshine-identity</code>, keeps it Sunshine OS.</p></div>
+      <div class="blk"><h3>Sunshine Store</h3><p>One application for pacman, the AUR and Flatpak. Installed packages are marked and sources are color coded.</p></div>
+      <div class="blk"><h3>Disk encryption</h3><p>Full-system encryption is one option in the graphical installer, or one question in the text installer. One passphrase at boot, asked by GRUB.</p></div>
+      <div class="blk"><h3>Wallpaper-derived colors</h3><p><code>matugen</code> derives a color scheme from the wallpaper and applies it across the shell, terminal and applications.</p></div>
+      <div class="blk"><h3>Terminal workflow</h3><p>fish with the starship prompt, the foot terminal, and <code>btop</code>, <code>eza</code> and <code>ripgrep</code> installed. <code>sunshine-info</code> prints system information for support.</p></div>
+      <div class="blk"><h3>Updates</h3><p>A user timer reports available updates. <code>sunshine-update</code> runs them in a terminal with a polkit password prompt, and <code>sunshine-cleanup</code> frees disk space safely.</p></div>
+      <div class="blk"><h3>Phone and AirPods</h3><p>KDE Connect pairs a phone for files, notifications and clipboard. AirPods report battery for each pod and the case, with noise control.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="tools">
+  <div class="inner">
+    <div class="head"><div class="t"><h2 class="h"><a href="#tools">System tools</a></h2><p class="sub">Commands included for checking and repairing the system. Output captured from a test install.</p></div></div>
     <div class="tabs">
       <button class="on" data-demo="doctor">sunshine-doctor</button>
       <button data-demo="snap">sunshine-snapshot</button>
       <button data-demo="id">sunshine-identity</button>
     </div>
     <div class="term2"><div class="bar"><i></i><i></i><i></i><span id="ttl" style="margin-left:8px">user@sunshine:~</span></div><pre id="tpre" aria-live="off"></pre></div>
-    <div class="cmds rv">
-      <div class="cmd2"><span class="inl">sunshine-doctor</span><p>Check identity, package manager, desktop, boot and restore points. <code>--fix</code> repairs.</p></div>
-      <div class="cmd2"><span class="inl">sunshine-snapshot</span><p>List, create or delete restore points (btrfs snapshots).</p></div>
-      <div class="cmd2"><span class="inl">sunshine-boot-repair</span><p>Repair initramfs, kernel image, GRUB and the boot menu.</p></div>
-      <div class="cmd2"><span class="inl">sunshine-fix-pacman</span><p>Repair locks, keyring, mirrors and databases.</p></div>
-      <div class="cmd2"><span class="inl">sunshine-cleanup</span><p>Free disk space: old package files, unused packages (asks first), old logs, old restore points.</p></div>
-      <div class="cmd2"><span class="inl">sunshine-update</span><p>Run system updates from a terminal with a polkit prompt.</p></div>
-      <div class="cmd2"><span class="inl">sunshine-identity</span><p>Check the Sunshine OS identity. A pacman hook runs it after every update of the filesystem package.</p></div>
-      <div class="cmd2"><span class="inl">sunshine-info</span><p>Print system information, for support requests.</p></div>
+    <div class="cmds">
+      <div class="cmd"><b>sunshine-doctor</b><p>Check identity, package manager, desktop, boot and restore points. <code>--fix</code> repairs.</p></div>
+      <div class="cmd"><b>sunshine-snapshot</b><p>List, create or delete restore points (btrfs snapshots).</p></div>
+      <div class="cmd"><b>sunshine-boot-repair</b><p>Repair initramfs, kernel image, GRUB and the boot menu.</p></div>
+      <div class="cmd"><b>sunshine-fix-pacman</b><p>Repair locks, keyring, mirrors and databases.</p></div>
+      <div class="cmd"><b>sunshine-cleanup</b><p>Free disk space: old package files, unused packages (asks first), old logs, old restore points.</p></div>
+      <div class="cmd"><b>sunshine-update</b><p>Run system updates from a terminal with a polkit prompt.</p></div>
+      <div class="cmd"><b>sunshine-identity</b><p>Check the Sunshine OS identity. A pacman hook runs it after every update of the filesystem package.</p></div>
+      <div class="cmd"><b>sunshine-info</b><p>Print system information, for support requests.</p></div>
     </div>
   </div>
 </section>
 
-<section id="look">
-  <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> The look</h2>
-    <p class="lead rv">A warm, dark palette by default: gold on deep indigo. The default wallpapers ship with the system.</p>
-    <div class="grid g2 rv">
-      <figure class="shot"><img src="assets/desktop.jpg" alt="Sunshine OS desktop wallpaper" loading="lazy"><figcaption>wallpaper / desktop</figcaption></figure>
-      <figure class="shot"><img src="assets/login.jpg" alt="Sunshine OS login wallpaper" loading="lazy"><figcaption>wallpaper / login</figcaption></figure>
-    </div>
+<section class="sec" id="specs">
+  <div class="inner">
+    <div class="head"><div class="t"><h2 class="h"><a href="#specs">Specifications</a></h2><p class="sub">The components that make up the system.</p></div>
+      <div class="more"><a class="tl" href="https://github.com/tak0dan/SunshineOS/blob/main/profile/packages.x86_64">Full package list<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a></div></div>
+    <dl class="spec mt6">
+      <div class="srow"><dt>Base</dt><dd>Arch Linux, rolling release. Packages come from the official Arch repositories, with the AUR and Flathub available on top.</dd></div>
+      <div class="srow"><dt>Kernel</dt><dd>The Arch <code>linux</code> kernel, with <code>linux-firmware</code>, <code>sof-firmware</code> and AMD and Intel microcode.</dd></div>
+      <div class="srow"><dt>Init</dt><dd>systemd</dd></div>
+      <div class="srow"><dt>Boot</dt><dd>GRUB on UEFI and legacy BIOS systems. The live medium boots through GRUB (UEFI) or syslinux (BIOS).</dd></div>
+      <div class="srow"><dt>Filesystems</dt><dd>btrfs with <code>snapper</code>, <code>snap-pac</code> and <code>grub-btrfs</code>, or ext4.</dd></div>
+      <div class="srow"><dt>Encryption</dt><dd>Full-system encryption with <code>cryptsetup</code>, with a single passphrase prompt from GRUB.</dd></div>
+      <div class="srow"><dt>Desktop</dt><dd>KDE Plasma in the live session. Hyprland with Quickshell, <code>uwsm</code>, <code>hypridle</code> and <code>hyprlock</code> on the installed system, with SDDM as the login manager.</dd></div>
+      <div class="srow"><dt>Graphics</dt><dd>Wayland, with Xwayland for X11 applications. Mesa drivers.</dd></div>
+      <div class="srow"><dt>Audio</dt><dd>PipeWire with ALSA, PulseAudio and JACK support, managed by WirePlumber.</dd></div>
+      <div class="srow"><dt>Network</dt><dd>NetworkManager and iwd. Bluetooth through BlueZ. Firewall with <code>ufw</code>.</dd></div>
+      <div class="srow"><dt>Power and memory</dt><dd><code>power-profiles-daemon</code> for power profiles, and <code>zram-generator</code> for compressed swap in memory.</dd></div>
+      <div class="srow"><dt>Shell</dt><dd>fish as the login shell, with the starship prompt. The foot terminal. zsh is available.</dd></div>
+      <div class="srow"><dt>Theming</dt><dd><code>matugen</code> derives the color scheme from the wallpaper and applies it across the shell and applications.</dd></div>
+      <div class="srow"><dt>Packages</dt><dd>pacman, with <code>yay</code> and <code>paru</code> for the AUR, Flatpak, and the Sunshine Store as one front end.</dd></div>
+      <div class="srow"><dt>Installers</dt><dd>Calamares (graphical) and a text installer.</dd></div>
+      <div class="srow"><dt>Architecture</dt><dd>x86_64</dd></div>
+    </dl>
+  </div>
+</section>
+<section class="sec deep" id="themes">
+  <div class="inner">
+    <div class="head"><div class="t"><h2 class="h"><a href="#themes">Pick a theme, change everything</a></h2>
+      <p class="sub">The desktop takes its colors from the wallpaper. This page follows the same idea: pick a time of day and it wears it.<span class="hide-s">&nbsp;Or press <kbd>T</kbd> to flip through them.</span></p></div></div>
+    <div class="palette" aria-hidden="true"><i style="background:var(--crest)"></i><i style="background:var(--hover)"></i><i style="background:var(--lit)"></i><i style="background:var(--mid)"></i><i style="background:var(--dim)"></i></div>
+    <ul class="themes" id="tlist" aria-label="Choose a theme">
+      <li><button type="button" data-t="sunrise">Sunrise</button><span aria-hidden="true">/</span></li>
+      <li><button type="button" data-t="noon">Noon</button><span aria-hidden="true">/</span></li>
+      <li><button type="button" data-t="ember">Ember</button><span aria-hidden="true">/</span></li>
+      <li><button type="button" data-t="dusk">Dusk</button><span aria-hidden="true">/</span></li>
+      <li><button type="button" data-t="midnight">Midnight</button></li>
+    </ul>
   </div>
 </section>
 
-<section id="themes">
-  <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> Themes</h2>
-    <p class="lead rv">This page follows the same idea as the desktop: pick a time of day and the colors change.</p>
-    <div class="themes" id="tlist">
-      <button data-t="sunrise">Sunrise</button>
-      <button data-t="noon">Noon</button>
-      <button data-t="ember">Ember</button>
-      <button data-t="dusk">Dusk</button>
-      <button data-t="midnight">Midnight</button>
-    </div>
-    <p class="note">Press <kbd>T</kbd> to cycle. The page adopts the active theme.</p>
+<section class="sec" id="releases" hidden>
+  <div class="inner">
+    <div class="head"><div class="t"><h2 class="h"><a href="#releases">Releases</a></h2><p class="sub">Published on GitHub. The newest ISO is what the download button above points to.</p></div>
+      <div class="more"><a class="tl" href="https://github.com/tak0dan/SunshineOS/releases">All releases<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a></div></div>
+    <ul class="news" id="newslist"><li style="padding:20px 0;color:var(--text-secondary);font-size:14px">Looking up releases&hellip;</li></ul>
   </div>
 </section>
 
-<section id="stack">
-  <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> Under the hood</h2>
-    <p class="lead rv">Tested end to end in virtual machines: live boot, graphical and text installs on UEFI and BIOS, btrfs and ext4.</p>
-    <div class="stats rv">
-      <div class="stat"><b>259</b><span>packages in the live image</span></div>
-      <div class="stat"><b>115</b><span>packages in the Hyprland desktop set</span></div>
-      <div class="stat"><b>8</b><span>maintenance and repair commands</span></div>
-      <div class="stat"><b>UEFI+BIOS</b><span>boot modes, installable on btrfs or ext4</span></div>
-    </div>
-    </div>
-  </div>
-</section>
-
-<section id="install">
-  <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> Install</h2>
-    <p class="lead rv">Three steps. Nothing on your computer changes until you press Install.</p>
-    <div class="steps rv">
-      <div class="step"><div class="num">01</div><div>
-        <h3>Download the latest ISO</h3>
-        <p id="dlinfo">Looking up the newest release&hellip;</p>
-        <p><a class="btn primary" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases/latest">Download latest ISO</a></p>
-        <div id="parts" hidden>
-          <p>GitHub limits a single file to 2 GB, so the ISO comes in parts. Download all of them into one folder, then join them:</p>
-          <ul id="partlist"></ul>
-          <pre class="code"># Linux / macOS
-cat sunshineos-*.iso.part* &gt; sunshineos.iso
-sha256sum -c sunshineos-*.iso.sha256
-# Windows (cmd)
-copy /b sunshineos-*.iso.part* sunshineos.iso</pre>
-        </div>
-        <p>Prefer building it yourself? <span class="inl">git clone https://github.com/tak0dan/SunshineOS &amp;&amp; cd SunshineOS &amp;&amp; ./build.sh</span> (Docker; it never touches your system.)</p>
-      </div></div>
-      <div class="step"><div class="num">02</div><div>
-        <h3>Write it to a USB stick</h3>
-        <p>Any tool works; with <span class="inl">dd</span>:</p>
-        <pre class="code">sudo dd if=sunshineos.iso of=/dev/sdX bs=4M status=progress oflag=sync</pre>
-      </div></div>
-      <div class="step"><div class="num">03</div><div>
-        <h3>Boot, then click &ldquo;Install Sunshine OS&rdquo;</h3>
-        <p>The Welcome window opens by itself. Pick btrfs to get restore points. Keep the internet connected: the Hyprland desktop is fetched during the install.</p>
-      </div></div>
-    </div>
-  </div>
-</section>
+</main>
 
 <footer>
-  <div class="wrap">
-    <div class="brand" style="color:var(--fg)"><img class="pixel" src="assets/favicon.png" alt="">Sunshine OS</div>
-    <div class="cols">
-      <div><h4>Explore</h4><a href="#features">Features</a><a href="#safety">Tools</a><a href="#install">Install</a></div>
-      <div><h4>Project</h4><a href="https://github.com/tak0dan/SunshineOS">Repository</a><a href="https://github.com/tak0dan/SunshineOS/releases">Releases</a><a href="https://github.com/tak0dan/SunshineOS/issues">Issues</a></div>
+  <canvas id="fpx" aria-hidden="true"></canvas>
+  <div class="in">
+    <div class="top">
+      <div class="about2">
+        <a class="brand" href="#top" aria-label="Sunshine OS home"><img class="pixel" src="assets/favicon.png" alt="">Sunshine OS</a>
+        <p>An operating system based on Arch Linux, for terminal and desktop.</p>
+      </div>
+      <div class="fcols">
+        <nav aria-label="Explore"><h2>Explore</h2><ul><li><a class="fl" href="#features">Features</a></li><li><a class="fl" href="#tools">Tools</a></li><li><a class="fl" href="#themes">Themes</a></li><li><a class="fl" href="#install">Install</a></li></ul></nav>
+        <nav aria-label="Project"><h2>Project</h2><ul><li><a class="fl" href="https://github.com/tak0dan/SunshineOS">Repository</a></li><li><a class="fl" href="https://github.com/tak0dan/SunshineOS/releases">Releases</a></li><li><a class="fl" href="https://github.com/tak0dan/SunshineOS/issues">Issues</a></li></ul></nav>
+      </div>
     </div>
-    <p style="margin-top:30px">Built on <a style="display:inline" href="https://archlinux.org">Arch Linux</a>, KDE Plasma, Hyprland and <a style="display:inline" href="https://github.com/end-4/dots-hyprland">end-4's dots</a>.</p>
+    <div class="bot"><p>Sunshine OS.</p><p>Built on <a class="ln" href="https://archlinux.org">Arch Linux</a>, KDE Plasma, Hyprland and <a class="ln" href="https://github.com/end-4/dots-hyprland">end-4's dots</a>.</p></div>
   </div>
 </footer>
 
 <script>
 (function(){
 "use strict";
-var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+
+/* theme */
+var themes=["sunrise","noon","ember","dusk","midnight"],ti=0;
+function setTheme(t,anim){
+  ti=themes.indexOf(t);
+  if(anim&&!reduce&&document.startViewTransition){document.startViewTransition(function(){document.documentElement.dataset.theme=t})}else document.documentElement.dataset.theme=t;
+  $$("#tlist button").forEach(function(b){b.classList.toggle("on",b.dataset.t===t);b.setAttribute("aria-pressed",b.dataset.t===t)});
+  try{localStorage.setItem("sunshine-theme",t)}catch(e){}
+  var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+  setTimeout(function(){dispatchEvent(new Event("themechange"))},0);
+}
+var saved=null;try{saved=localStorage.getItem("sunshine-theme")}catch(e){}
+setTheme(themes.indexOf(saved)>-1?saved:"sunrise");
+function next(){setTheme(themes[(ti+1)%themes.length],true)}
+$("#cycle").onclick=next;$("#cycle2").onclick=next;
+$$("#tlist button").forEach(function(b){b.onclick=function(){setTheme(b.dataset.t,true)}});
+document.addEventListener("keydown",function(e){
+  if((e.key==="t"||e.key==="T")&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/INPUT|TEXTAREA/.test((e.target||{}).tagName))next();
+});
+
+/* nav */
+var nav=$("#nav"),hero=$(".hero");
+function navState(){nav.classList.toggle("solid",scrollY>hero.offsetHeight-90)}
+addEventListener("scroll",navState,{passive:true});navState();
+$("#menub").onclick=function(){var o=$("#menu").classList.toggle("open");this.setAttribute("aria-expanded",o)};
+$$("#menu a").forEach(function(a){a.addEventListener("click",function(){$("#menu").classList.remove("open")})});
+
+/* reveal + typed heading */
+var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");rio.unobserve(e.target)}})},{threshold:.12});
+$$(".rv,.blk,.srow,.row,.cmd").forEach(function(el){if(!el.classList.contains("rv"))el.classList.add("rv");rio.observe(el)});
+var th=$("#typed"),tt=$(".tt",th),full=th.dataset.typed;
+function typeIt(){if(reduce){tt.textContent=full;return}var i=0;(function s(){tt.textContent=full.slice(0,++i);if(i<full.length)setTimeout(s,70)})()}
+if(reduce)tt.textContent=full;else{var tio=new IntersectionObserver(function(es){if(es[0].isIntersecting){tio.disconnect();setTimeout(typeIt,300)}},{threshold:.6});tio.observe(th)}
+
+/* terminal demos */
 var DEMOS={
  doctor:{title:"user@sunshine:~", lines:[
   ["p","$ sunshine-doctor"],["d","Sunshine OS doctor  (check only; add --fix to repair)"],[""],
@@ -350,123 +569,112 @@ function play(name){
 }
 
 
-document.querySelectorAll("[data-demo]").forEach(function(b){ b.addEventListener("click",function(){
-  document.querySelectorAll("[data-demo]").forEach(function(o){ o.classList.remove("on"); }); b.classList.add("on"); play(b.dataset.demo); }); });
-var started=false, tio=new IntersectionObserver(function(es){ if(es[0].isIntersecting&&!started){ started=true; play("doctor"); } },{threshold:.3});
-tio.observe(document.querySelector(".term2"));
-var rio=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); rio.unobserve(e.target);} }); },{threshold:.12});
-document.querySelectorAll(".rv").forEach(function(el){ rio.observe(el); });
-})();
 
-/* latest release from GitHub: always points at the newest ISO, whatever its version */
-(function(){
-  var info=document.getElementById("dlinfo"), btn=document.getElementById("dlbtn"), box=document.getElementById("parts"), list=document.getElementById("partlist");
-  function mb(n){ return n>1e9 ? (n/1e9).toFixed(2)+" GB" : Math.round(n/1e6)+" MB"; }
-  fetch("https://api.github.com/repos/tak0dan/SunshineOS/releases/latest",{headers:{Accept:"application/vnd.github+json"}})
-   .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-   .then(function(rel){
-     var as=(rel.assets||[]), isos=as.filter(function(a){return /\.iso$/.test(a.name);}),
-         parts=as.filter(function(a){return /\.iso\.part/.test(a.name);}).sort(function(a,b){return a.name<b.name?-1:1;}),
-         sum=as.filter(function(a){return /\.sha256$/.test(a.name);});
-     var d=new Date(rel.published_at).toISOString().slice(0,10);
-     if(isos.length){ btn.href=isos[0].browser_download_url; btn.textContent="Download ISO ("+mb(isos[0].size)+")";
-       info.textContent="Latest: "+rel.name+" ("+d+"). Verify with the .sha256 file on the release page."; }
-     else if(parts.length){
-       var tot=parts.reduce(function(n,a){return n+a.size;},0);
-       info.textContent="Latest: "+rel.name+" ("+d+"), "+mb(tot)+" in "+parts.length+" parts.";
-       btn.textContent="Download part 1 of "+parts.length; btn.href=parts[0].browser_download_url; box.hidden=false;
-       parts.concat(sum).forEach(function(a){ var li=document.createElement("li"), l=document.createElement("a"); l.href=a.browser_download_url; l.textContent=a.name; li.appendChild(l); li.appendChild(document.createTextNode(" ("+mb(a.size)+")")); list.appendChild(li); });
-     } else { info.textContent="Latest release: "+rel.name+" ("+d+"). Open the release page for the files."; btn.href=rel.html_url; }
-     document.getElementById("herodl").href="#install";
-   }).catch(function(){ info.textContent="No release found yet. Check the releases page, or build it yourself below."; });
-})();
-</script>
-<script>
-/* hero: a field of pixel squares with the name drawn as a dot-matrix wordmark */
-(function(){
-"use strict";
-var cv=document.getElementById("px"), ctx=cv.getContext("2d"), hero=document.querySelector(".hero"), wm=document.getElementById("wm");
-var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-var FONT={
- S:[".####","#....","#....",".###.","....#","....#","####."],
- U:["#...#","#...#","#...#","#...#","#...#","#...#",".###."],
- N:["#...#","##..#","#.#.#","#..##","#...#","#...#","#...#"],
- H:["#...#","#...#","#...#","#####","#...#","#...#","#...#"],
- I:["#####","..#..","..#..","..#..","..#..","..#..","#####"],
- E:["#####","#....","#....","####.","#....","#....","#####"],
- O:[".###.","#...#","#...#","#...#","#...#","#...#",".###."]
-};
-var TEXT="SUNSHINE OS", COLS=TEXT.length*6-1;
-var cells=[]; // wordmark cells {c,r}
-(function(){ for(var k=0;k<TEXT.length;k++){ var g=FONT[TEXT[k]]; if(!g) continue; for(var r=0;r<7;r++)for(var c=0;c<5;c++) if(g[r][c]==="#") cells.push({c:k*6+c,r:r,d:0}); } })();
-cells.length=0; // no wordmark: the logo is the hero
-function hash(i,j){ var h=(i*374761393+j*668265263)^0x5bd1e995; h=(h^(h>>>13))*1274126177; return ((h^(h>>>16))>>>0)/4294967295; }
-function rgb(v){ v=v.trim(); if(v[0]==="#"){ if(v.length===4) v="#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]; return [parseInt(v.slice(1,3),16),parseInt(v.slice(3,5),16),parseInt(v.slice(5,7),16)]; } return [255,177,46]; }
-var W,H,P,ox,oy,wc0,wr0,pal,t0=performance.now(),raf=0;
-function readPal(){ var s=getComputedStyle(document.documentElement); var th=document.body.getAttribute("data-theme"); pal={a:rgb(s.getPropertyValue("--accent")),b:rgb(s.getPropertyValue("--accent2")),f:rgb(s.getPropertyValue("--fg"))}; }
-function layout(){
-  var dpr=Math.min(devicePixelRatio||1,2), hr=hero.getBoundingClientRect(); W=hr.width; H=hr.height;
-  cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
-  P=Math.max(5,Math.min(20,Math.floor((W-48)*.88/COLS)));
-  wm.style.height=(7*P)+"px";
-  var wr=wm.getBoundingClientRect(), left=wr.left+(wr.width-COLS*P)/2-hr.left, top=wr.top-hr.top;
-  ox=((left%P)+P)%P; oy=((top%P)+P)%P; wc0=Math.round((left-ox)/P); wr0=Math.round((top-oy)/P);
-  cells.forEach(function(q){ q.d=(q.c/COLS)*.9+hash(q.c,q.r)*.7; });
-}
-function dens(i,j){ // probability of a background square: sparse near the middle, denser toward the edges and bottom
-  var x=(ox+i*P)/W-.5, y=(oy+j*P)/H;
-  var ex=Math.min(1,Math.pow(Math.abs(x)*2,1.6));
-  var base=.012+.34*ex+.30*Math.pow(y,3)*(.25+.75*ex);
-  return Math.min(.55,base);
-}
-function draw(now){
-  var t=(now-t0)/1000; ctx.clearRect(0,0,W,H);
-  var ncol=Math.ceil(W/P)+1, nrow=Math.ceil(H/P)+1, sz=Math.max(2,Math.round(P*.5)), off=Math.round((P-sz)/2);
-  for(var j=-1;j<nrow;j++)for(var i=-1;i<ncol;i++){
-    var h=hash(i+7,j+13), p=dens(i,j); if(h>p) continue;
-    var cx=(ox+i*P)/W-.5, intro=reduce?1:Math.min(1,Math.max(0,(t-Math.abs(cx)*.9-hash(j,i)*.6)/.5));
-    if(intro<=0) continue; intro=Math.round(intro*3)/3;
-    var a=.07+.2*hash(i,j*3+1); if(hash(i*5,j*7)<.14&&!reduce) a*=.55+.45*Math.sin(t*(.6+hash(i,j)*1.4)+h*20);
-    ctx.fillStyle="rgba("+pal.a[0]+","+pal.a[1]+","+pal.a[2]+","+(a*intro).toFixed(3)+")";
-    ctx.fillRect(Math.round(ox+i*P+off),Math.round(oy+j*P+off),sz,sz);
+$$("[data-demo]").forEach(function(b){b.addEventListener("click",function(){$$("[data-demo]").forEach(function(o){o.classList.remove("on")});b.classList.add("on");play(b.dataset.demo)})});
+var started=false,tmio=new IntersectionObserver(function(es){if(es[0].isIntersecting&&!started){started=true;play("doctor")}},{threshold:.3});tmio.observe($(".term2"));
+
+/* pixel field */
+function rgb(v){v=(v||"").trim();if(v[0]==="#"){if(v.length===4)v="#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3];return[parseInt(v.slice(1,3),16),parseInt(v.slice(3,5),16),parseInt(v.slice(5,7),16)]}return[255,177,46]}
+function hash(i,j){var h=(i*374761393+j*668265263)^0x5bd1e995;h=(h^(h>>>13))*1274126177;return((h^(h>>>16))>>>0)/4294967295}
+function Field(cv,host,o){
+  var ctx=cv.getContext("2d"),W,H,P,col,light,t0=performance.now(),raf=0,on=true;
+  function pal(){var s=getComputedStyle(document.documentElement);col=rgb(s.getPropertyValue("--lit"));var b=rgb(s.getPropertyValue("--field-bg"));light=(b[0]+b[1]+b[2])/3>140}
+  function size(){var d=Math.min(devicePixelRatio||1,2),r=host.getBoundingClientRect();W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);P=Math.max(10,Math.min(20,Math.round(W/72)))}
+  function dens(i,j){var x=(i*P)/W-.5,y=(j*P)/H,ex=Math.min(1,Math.pow(Math.abs(x)*2,1.6));return o.up?Math.min(.5,.012+.34*ex+.28*Math.pow(1-y,2.5)*(.3+.7*ex)):Math.min(.55,.012+.34*ex+.30*Math.pow(y,3)*(.25+.75*ex))}
+  function draw(now){
+    var t=(now-t0)/1000;ctx.clearRect(0,0,W,H);
+    var nc=Math.ceil(W/P)+1,nr=Math.ceil(H/P)+1,sz=Math.max(3,Math.round(P*.5)),off=Math.round((P-sz)/2);
+    for(var j=0;j<nr;j++)for(var i=0;i<nc;i++){
+      var h=hash(i+7,j+13);if(h>dens(i,j))continue;
+      var cx=(i*P)/W-.5,k=reduce||!o.intro?1:Math.min(1,Math.max(0,(t-Math.abs(cx)*.9-hash(j,i)*.6)/.5));
+      if(k<=0)continue;k=Math.round(k*3)/3;
+      var a=(.08+.22*hash(i,j*3+1))*(light?1.5:1);
+      if(hash(i*5,j*7)<.14&&!reduce)a*=.55+.45*Math.sin(t*(.6+hash(i,j)*1.4)+h*20);
+      ctx.fillStyle="rgba("+col[0]+","+col[1]+","+col[2]+","+(a*k).toFixed(3)+")";
+      ctx.fillRect(i*P+off,j*P+off,sz,sz);
+    }
   }
-  var wsz=Math.max(3,Math.round(P*.78)), woff=Math.round((P-wsz)/2);
-  cells.forEach(function(q){
-    var k=reduce?1:Math.min(1,Math.max(0,(t-.25-q.d*.9)/.35)); if(k<=0) return; k=Math.round(k*3)/3;
-    var m=q.r/6, rr=Math.round(pal.a[0]+(pal.b[0]-pal.a[0])*m), gg=Math.round(pal.a[1]+(pal.b[1]-pal.a[1])*m), bb=Math.round(pal.a[2]+(pal.b[2]-pal.a[2])*m);
-    var glint=(reduce||k<1)?0:Math.max(0,Math.sin(t*.9-q.c*.35)-.93)*10; // slow light sweep across the letters
-    ctx.fillStyle="rgba("+rr+","+gg+","+bb+","+(Math.min(1,k*(.92+glint*.08))).toFixed(3)+")";
-    ctx.fillRect(Math.round(ox+(wc0+q.c)*P+woff),Math.round(oy+(wr0+q.r)*P+woff),wsz,wsz);
-    if(glint>.2){ ctx.fillStyle="rgba("+pal.f[0]+","+pal.f[1]+","+pal.f[2]+","+Math.min(.5,glint*.5).toFixed(2)+")"; ctx.fillRect(Math.round(ox+(wc0+q.c)*P+woff),Math.round(oy+(wr0+q.r)*P+woff),wsz,wsz); }
-  });
+  var last=0;function loop(n){if(!on)return;if(n-last>66){last=n;draw(n)}raf=requestAnimationFrame(loop)}
+  function go(){cancelAnimationFrame(raf);pal();size();draw(performance.now());if(!reduce&&on)raf=requestAnimationFrame(loop)}
+  var rz;addEventListener("resize",function(){clearTimeout(rz);rz=setTimeout(function(){size();draw(performance.now())},120)});
+  addEventListener("themechange",function(){pal();draw(performance.now())});
+  new IntersectionObserver(function(es){on=es[0].isIntersecting;if(on&&!reduce){cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}else cancelAnimationFrame(raf)}).observe(host);
+  go();setTimeout(go,60);
 }
-var last=0; function loop(now){ if(now-last>66){ last=now; draw(now); } raf=requestAnimationFrame(loop); }
-function start(){ cancelAnimationFrame(raf); readPal(); layout(); draw(performance.now()); if(!reduce) raf=requestAnimationFrame(loop); }
-var rz; addEventListener("resize",function(){ clearTimeout(rz); rz=setTimeout(function(){ layout(); draw(performance.now()); },120); });
-addEventListener("themechange",function(){ readPal(); draw(performance.now()); });
-var vis=new IntersectionObserver(function(es){ if(reduce) return; if(es[0].isIntersecting){ cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);} else cancelAnimationFrame(raf); }); vis.observe(hero);
-if(document.fonts&&document.fonts.ready) document.fonts.ready.then(start); else start();
-setTimeout(start,50);
-})();
-</script>
-<script>
+Field($("#px"),hero,{intro:true});
+/* name written into the strip cut through the logo */
 (function(){
-  var themes=["sunrise","noon","ember","dusk","midnight"], i=0;
-  var body=document.body, name=document.getElementById("tname");
-  function set(t){
-    i=themes.indexOf(t); body.setAttribute("data-theme",t); document.documentElement.setAttribute("data-theme",t);
-    name.textContent=t;
-    document.querySelectorAll("#tlist button").forEach(function(b){b.classList.toggle("on",b.dataset.t===t)});
-    try{localStorage.setItem("sunshine-theme",t)}catch(e){}
-    setTimeout(function(){dispatchEvent(new Event("themechange"))},0);
+  var stage=$("#stage"),cv=$("#wm"),ctx=cv.getContext("2d");
+  var F={S:[".####","#....","#....",".###.","....#","....#","####."],U:["#...#","#...#","#...#","#...#","#...#","#...#",".###."],N:["#...#","##..#","#.#.#","#..##","#...#","#...#","#...#"],H:["#...#","#...#","#...#","#####","#...#","#...#","#...#"],I:["#####","..#..","..#..","..#..","..#..","..#..","#####"],E:["#####","#....","#....","####.","#....","#....","#####"],O:[".###.","#...#","#...#","#...#","#...#","#...#",".###."]};
+  var TX="SUNSHINE OS",COLS=TX.length*6-1,cells=[];
+  for(var k=0;k<TX.length;k++){var g=F[TX[k]];if(!g)continue;for(var r=0;r<7;r++)for(var c=0;c<5;c++)if(g[r][c]==="#")cells.push({c:k*6+c,r:r,d:(k*6+c)/COLS*.85+hash(k*6+c,r)*.5})}
+  var P,w,h,pal,t0=performance.now(),raf=0,on=true;
+  var band=["--crest","--hover","--lit","--lit","--mid","--mid","--dim"];
+  function colors(){var s=getComputedStyle(document.documentElement);pal=band.map(function(n){return rgb(s.getPropertyValue(n))});pal.f=rgb(s.getPropertyValue("--text"))}
+  function size(){var d=Math.min(devicePixelRatio||1,2),sw=stage.getBoundingClientRect().width,G=parseFloat(getComputedStyle(stage).getPropertyValue("--G"))||128,S=parseFloat(getComputedStyle(stage).getPropertyValue("--S"))||768;
+    P=Math.max(3,Math.floor(sw*.94/COLS));w=COLS*P;h=7*P;cv.style.width=w+"px";cv.style.height=h+"px";cv.style.top=(S/2+(G-h)/2)+"px";cv.width=Math.round(w*d);cv.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0)}
+  function draw(now){
+    var t=(now-t0)/1000;ctx.clearRect(0,0,w,h);var sz=Math.max(2,Math.round(P*.8)),off=Math.round((P-sz)/2);
+    cells.forEach(function(q){
+      var k=reduce?1:Math.min(1,Math.max(0,(t-1.15-q.d)/.4));if(k<=0)return;k=Math.round(k*3)/3;
+      var p=pal[q.r],gl=(reduce||k<1)?0:Math.max(0,Math.sin(t*.8-q.c*.3)-.94)*14;
+      ctx.fillStyle="rgba("+p[0]+","+p[1]+","+p[2]+","+k.toFixed(2)+")";ctx.fillRect(q.c*P+off,q.r*P+off,sz,sz);
+      if(gl>.2){ctx.fillStyle="rgba("+pal.f[0]+","+pal.f[1]+","+pal.f[2]+","+Math.min(.55,gl*.5).toFixed(2)+")";ctx.fillRect(q.c*P+off,q.r*P+off,sz,sz)}
+    });
   }
-  var saved=null; try{saved=localStorage.getItem("sunshine-theme")}catch(e){}
-  set(themes.indexOf(saved)>-1?saved:"sunrise");
-  document.getElementById("cycle").onclick=function(){set(themes[(i+1)%themes.length])};
-  document.querySelectorAll("#tlist button").forEach(function(b){b.onclick=function(){set(b.dataset.t)}});
-  document.addEventListener("keydown",function(e){
-    if((e.key==="t"||e.key==="T")&&!e.ctrlKey&&!e.metaKey&&!e.altKey) set(themes[(i+1)%themes.length]);
+  var last=0;function loop(n){if(!on)return;if(n-last>50){last=n;draw(n)}raf=requestAnimationFrame(loop)}
+  function go(){cancelAnimationFrame(raf);colors();size();draw(performance.now());if(!reduce&&on)raf=requestAnimationFrame(loop)}
+  var rz;addEventListener("resize",function(){clearTimeout(rz);rz=setTimeout(function(){size();draw(performance.now())},120)});
+  addEventListener("themechange",function(){colors();draw(performance.now())});
+  new IntersectionObserver(function(es){on=es[0].isIntersecting;if(on&&!reduce){cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}else cancelAnimationFrame(raf)}).observe(stage);
+  go();setTimeout(go,60);
+})();
+Field($("#fpx"),$("footer"),{up:true});
+
+/* releases from GitHub */
+var REPO="tak0dan/SunshineOS";
+function mb(n){return n>1e9?(n/1e9).toFixed(2)+" GB":Math.round(n/1e6)+" MB"}
+function fd(s){try{return new Date(s).toLocaleDateString("en",{year:"numeric",month:"long",day:"numeric"})}catch(e){return s}}
+fetch("https://api.github.com/repos/"+REPO+"/releases?per_page=12",{headers:{Accept:"application/vnd.github+json"}})
+.then(function(r){if(!r.ok)throw 0;return r.json()})
+.then(function(rs){
+  rs=rs.filter(function(r){return !r.draft});
+  if(!rs.length)throw 0;
+  var top=rs[0];$("#releases").hidden=false;$$(".rl").forEach(function(a){a.hidden=false});
+  $("#relpilltext").textContent="Sunshine OS "+(top.name||top.tag_name)+" is available";$("#relpill").hidden=false;
+  var done=false;
+  rs.forEach(function(rel){
+    if(done)return;var as=rel.assets||[],
+      isos=as.filter(function(a){return /\.iso$/i.test(a.name)}),
+      parts=as.filter(function(a){return /\.iso\.part/i.test(a.name)}).sort(function(a,b){return a.name<b.name?-1:1}),
+      sum=as.filter(function(a){return /\.sha256$/i.test(a.name)});
+    if(!isos.length&&!parts.length)return;done=true;
+    var label=(rel.name||rel.tag_name),sm=$("#dlsm");
+    $("#dlinfo").textContent="Latest ISO: "+label+", published "+fd(rel.published_at)+".";
+    if(isos.length){
+      var a=isos[0];$("#dlbtn").href=a.browser_download_url;$("#dlbtntext").textContent=label+" (x86_64) · "+mb(a.size);
+      sm.innerHTML=(sum[0]?'<a href="'+esc(sum[0].browser_download_url)+'">SHA-256</a>':"")+'<a href="'+esc(rel.html_url)+'">Release notes</a>';
+    }else{
+      var tot=parts.reduce(function(n,a){return n+a.size},0);
+      $("#dlbtn").href=parts[0].browser_download_url;$("#dlbtntext").textContent="Part 1 of "+parts.length+" · "+mb(tot)+" total";
+      $("#parts").hidden=false;var ul=$("#partlist");ul.innerHTML="";
+      parts.concat(sum).forEach(function(a){var li=document.createElement("li");li.innerHTML='<a class="ln" href="'+esc(a.browser_download_url)+'">'+esc(a.name)+"</a> ("+mb(a.size)+")";ul.appendChild(li)});
+      sm.innerHTML='<a href="'+esc(rel.html_url)+'">Release notes</a>';
+    }
   });
+  if(!done){$("#dlinfo").textContent="No release with an ISO has been published yet.";$("#dlbtntext").textContent="Open the releases page";}
+  var ul=$("#newslist");ul.innerHTML="";
+  rs.slice(0,6).forEach(function(r){
+    var body=(r.body||"").split(/\r?\n/).map(function(l){return l.replace(/^[#>*\-\s]+/,"").trim()}).filter(Boolean)[0]||((r.assets||[]).length+" files attached");
+    var li=document.createElement("li");li.className="rv";
+    li.innerHTML='<a href="'+esc(r.html_url)+'"><time datetime="'+esc(r.published_at)+'">'+esc(fd(r.published_at))+'</time><span class="ti">'+esc(r.name||r.tag_name)+'</span><span class="ex">'+esc(body)+"</span></a>";
+    ul.appendChild(li);rio.observe(li);
+  });
+}).catch(function(){
+  $("#dlinfo").textContent="No release has been published yet. You can build the ISO yourself, see below.";
+  $("#dlbtntext").textContent="Open the releases page";
+  $("#newslist").innerHTML='<li style="padding:20px 0;color:var(--text-secondary);font-size:14px">No releases yet.</li>';
+});
 })();
 </script>
 </body>
