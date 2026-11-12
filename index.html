@@ -113,6 +113,16 @@ h2::before{content:"> ";color:var(--orange)}
 .step p{margin:0}
 pre.code{margin:10px 0 0;padding:12px 14px;background:#0a0f1a;color:var(--peach);font-family:var(--body);font-size:20px;overflow-x:auto;white-space:pre}
 
+/* pets */
+.petrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:18px;padding:24px 18px;text-align:center}
+.pet{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--head);font-size:9px;color:var(--peach)}
+.pet img{width:128px;height:128px;object-fit:none;object-position:calc(var(--i) * -128px) 0;image-rendering:pixelated;animation:petbob 1s steps(1) infinite}
+.pet:nth-child(2n) img{animation-delay:.3s}.pet:nth-child(3n) img{animation-delay:.6s}
+@keyframes petbob{0%{object-position:calc(var(--i) * -128px) 0}50%{object-position:calc(var(--i) * -128px) -128px}}
+.pet.rare{color:var(--gold)}.pet.rare b{font-size:8px;color:#2a1a0e;background:var(--gold);padding:3px 6px}
+.pet.rare img{filter:drop-shadow(0 0 10px rgba(255,150,60,.8))}
+@media (prefers-reduced-motion:reduce){.pet img{animation:none}}
+
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:26px;text-align:center}
 .stat{padding:20px 10px}
@@ -172,19 +182,39 @@ footer .pix{display:inline-block;width:32px;height:32px;margin-bottom:10px}
     <article class="card px rv"><canvas data-ic="doctor"></canvas><h3>THE DOCTOR</h3><p><code>sunshine-doctor</code> checks boot files, keyring, disk, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></article>
     <article class="card px rv"><canvas data-ic="id"></canvas><h3>IDENTITY GUARD</h3><p>A plain Arch update would quietly turn the system back into "Arch Linux". A pacman hook keeps it Sunshine OS: <code>sunshine-identity</code>.</p></article>
     <article class="card px rv"><canvas data-ic="bag"></canvas><h3>SUNSHINE STORE</h3><p>One app for pacman, the AUR and Flatpak. Installed apps are green, sources are colour coded, and it never hides what it is doing.</p></article>
+    <article class="card px rv"><canvas data-ic="lock"></canvas><h3>DISK ENCRYPTION</h3><p>Tick one box (or answer one question in the text installer) and the whole system is encrypted. One passphrase at boot, asked by GRUB.</p></article>
+    <article class="card px rv"><canvas data-ic="phone"></canvas><h3>PHONE + AIRPODS</h3><p>KDE Connect pairs your phone for files, notifications and clipboard. AirPods get battery for each pod and the case, plus noise control.</p></article>
+    <article class="card px rv"><canvas data-ic="egg"></canvas><h3>A PIXEL PET</h3><p>A real virtual pet lives in your tray. Nine species, five life stages, and one very rare flame. See below.</p></article>
     <article class="card px rv"><canvas data-ic="disk"></canvas><h3>NO-QUESTIONS INSTALLER</h3><p>A graphical installer (Calamares) and a text one. It retries every package three times, never removes yours, and keeps going.</p></article>
   </div>
 </div></section>
 
 <section id="safety" style="background:var(--bg2);border-block:var(--px) solid var(--line)"><div class="wrap">
   <h2>THE SAFETY NET</h2>
-  <p class="sub">Commands that keep the system healthy and recognisably yours. A typical session.</p>
+  <p class="sub">Commands that keep the system healthy and recognisably yours. This output was captured from a test install.</p>
   <div class="tabs">
     <button class="btn" data-demo="doctor">sunshine-doctor</button>
     <button class="btn alt" data-demo="snap">sunshine-snapshot</button>
     <button class="btn alt" data-demo="id">sunshine-identity</button>
   </div>
   <div class="term px hot"><div class="bar"><i></i><i></i><i></i><span id="ttl">user@sunshine:~</span></div><pre id="tpre" aria-live="off"></pre></div>
+</div></section>
+
+<section id="pets"><div class="wrap">
+  <h2>MEET THE PETS</h2>
+  <p class="sub">Every egg hatches into a different friend. Feed it, wash it, play with it, tuck it in. How you care decides what it grows into. Once in 250 hatches it is the signature one.</p>
+  <div class="petrow px" id="petrow">
+    <div class="pet"><img src="assets/pets.png" alt="Blobbo" style="--i:0"><span>BLOBBO</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Whiskers" style="--i:1"><span>WHISKERS</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Hoppy" style="--i:2"><span>HOPPY</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Sprout" style="--i:3"><span>SPROUT</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Boo" style="--i:4"><span>BOO</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Cappy" style="--i:5"><span>CAPPY</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Bolt" style="--i:6"><span>BOLT</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Drippy" style="--i:7"><span>DRIPPY</span></div>
+    <div class="pet"><img src="assets/pets.png" alt="Pickle" style="--i:8"><span>PICKLE</span></div>
+    <div class="pet rare"><img src="assets/pets.png" alt="Ember, the rare flame" style="--i:9"><span>EMBER</span><b>1 IN 250</b></div>
+  </div>
 </div></section>
 
 <section id="stack"><div class="wrap">
@@ -194,7 +224,7 @@ footer .pix{display:inline-block;width:32px;height:32px;margin-bottom:10px}
     <div class="stat px"><b id="n1">15s</b><span>live boot</span></div>
     <div class="stat px"><b>113</b><span>desktop packages installed per run</span></div>
     <div class="stat px"><b>3x</b><span>retries per package, then carry on</span></div>
-    <div class="stat px"><b>2</b><span>desktops: Plasma + Hyprland</span></div>
+    <div class="stat px"><b>10</b><span>pet species, 1 in 250 is a flame</span></div>
   </div>
 </div></section>
 
@@ -245,6 +275,9 @@ var ICONS = {
  doctor:["............","....yyyy....","....yppy....","....yppy....",".yyyyppyyyy.",".yppppppppy.",".yppppppppy.",".yyyyppyyyy.","....yppy....","....yppy....","....yyyy....","............"],
  id:["............","..oooooooo..",".oyyyyyyyyo.",".oy.yyyy.yo.",".oy.yyyy.yo.",".oyyyyyyyyo.",".oy.wwww.yo.",".oy......yo.",".oyyyyyyyyo.","..oooooooo..","............","............"],
  bag:["............","....wwww....","...w....w...","...w....w...","..oooooooo..","..oyyyyyyo..","..oyyppyyo..","..oyyppyyo..","..oyyyyyyo..","..oooooooo..","............","............"],
+ lock:["............","....wwww....","...w....w...","...w....w...",".oooooooooo.",".oyyyyyyyyo.",".oyyykkyyyo.",".oyyykkyyyo.",".oyyyyyyyyo.",".oooooooooo.","............","............"],
+ phone:["............","...wwwwww...","...wbbbbw...","...wbbbbw...","...wboooow..","...wbooow...","...wbbbbw...","...wbbbbw...","...wbbbbw...","...wwwwww...","....wyyw....","............"],
+ egg:["............","....wwww....","...wwppww...","..wwwwwwww..","..wwyywwww..","..wwwwwwoo..","..wwwwwwww..","..woowwwww..","...wwwwww...","....wwww....","............","............"],
  disk:["............",".wwwwwwwwww.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wwwwwwwwww.",".wkkkkkkkkw.",".wkkkgkkkkw.",".wwwwwwwwww.","............","............"]
 };
 document.querySelectorAll("canvas[data-ic]").forEach(function(cv){ bmp(cv, ICONS[cv.dataset.ic]); });
@@ -278,9 +311,9 @@ if(!reduce) setInterval(function(){ drawSun(++t); }, 500);
 
 /* hero background: the real wallpaper, shrunk to a chunky pixel grid */
 var bg=document.getElementById("bg"), bx=bg.getContext("2d"), im=new Image();
-im.onload=function(){ bg.width=224; bg.height=126; bx.imageSmoothingEnabled=true; bx.drawImage(im,0,0,224,126);
+im.onload=function(){ try{ bg.width=224; bg.height=126; bx.imageSmoothingEnabled=true; bx.drawImage(im,0,0,224,126);
   var d=bx.getImageData(0,0,224,126), p=d.data, lv=6;                                    // posterise: fewer colours
-  for(var i=0;i<p.length;i+=4){ for(var k=0;k<3;k++){ p[i+k]=Math.round(p[i+k]/255*lv)/lv*255; } } bx.putImageData(d,0,0); };
+  for(var i=0;i<p.length;i+=4){ for(var k=0;k<3;k++){ p[i+k]=Math.round(p[i+k]/255*lv)/lv*255; } } bx.putImageData(d,0,0); }catch(e){} };
 im.src="assets/flower.jpg";
 
 /* stars + clouds */
@@ -307,21 +340,20 @@ var DEMOS={
  doctor:{title:"user@sunshine:~", lines:[
   ["p","$ sunshine-doctor"],["d","Sunshine OS doctor  (check only; add --fix to repair)"],[""],
   ["sec","☀ Identity"],["ok","  ✔ this is Sunshine OS (Sunshine OS)"],[""],
-  ["sec","☀ Package manager"],["ok","  ✔ no lock file"],["ok","  ✔ package keyring present"],["ok","  ✔ package database consistent"],[""],
-  ["sec","☀ Boot"],["ok","  ✔ kernel image present"],["ok","  ✔ kernel image fully allocated (GRUB can read it)"],["ok","  ✔ GRUB menu present"],[""],
-  ["sec","☀ Restore points"],["ok","  ✔ snapper configured for /"],["ok","  ✔ automatic snapshot before/after every update (snap-pac)"],["ok","  ✔ snapshots appear in the GRUB menu"],[""],
+  ["sec","☀ Package manager"],["ok","  ✔ no lock file"],["ok","  ✔ package keyring present"],["ok","  ✔ package database consistent"],["ok","  ✔ no pending .pacnew files"],[""],
+  ["sec","☀ Desktop"],["ok","  ✔ icon font is the tested version (4.0.0-1)"],[""],
+  ["sec","☀ Boot"],["ok","  ✔ kernel image present"],["ok","  ✔ initramfs present"],["ok","  ✔ kernel image fully allocated (GRUB can read it)"],["ok","  ✔ GRUB menu present"],["ok","  ✔ EFI partition mounted"],[""],
+  ["sec","☀ Restore points"],["ok","  ✔ snapper configured for /"],["ok","  ✔ snapper-timeline.timer enabled"],["ok","  ✔ grub-btrfsd.service enabled"],["ok","  ✔ automatic snapshot before/after every update (snap-pac)"],[""],
   ["ok","All good"]]},
  snap:{title:"user@sunshine:~", lines:[
-  ["p","$ sunshine-snapshot create \"before trying something risky\""],["ok","Restore point created."],[""],
-  ["p","$ sudo pacman -Syu"],["d",":: Running pre-transaction hooks..."],["d","[snap-pac] pre  snapshot #7"],["d","... upgrading packages ..."],["d","[snap-pac] post snapshot #8"],[""],
-  ["p","$ sunshine-snapshot list"],
-  ["","  # | Type   | Description"],["","  1 | single | Fresh install"],["","  6 | single | before trying something risky"],["","  7 | pre    | pacman -Syu"],["","  8 | post   | pacman -Syu"],[""],
-  ["wn","Something broke? Reboot, pick \"Sunshine OS snapshots\" in the menu,"],["wn","then restore from Btrfs Assistant."]]},
+  ["p","$ sudo pacman -S --noconfirm --needed cowsay"],["d","(3/3) Performing snapper post snapshots for the following configurations..."],["d","==> root: 3"],[""],
+  ["p","$ sudo snapper -c root list"],
+  ["","0 │ single │       │ current"],["","1 │ single │       │ Fresh install"],["","2 │ pre    │       │ pacman -S --noconfirm --needed cowsay"],["","3 │ post   │     2 │ cowsay"],[""],
+  ["wn","Something broke? Reboot, pick \"Sunshine OS snapshots\" in the boot menu,"],["wn","then restore from Btrfs Assistant."]]},
  id:{title:"user@sunshine:~", lines:[
-  ["p","$ sudo pacman -Syu"],["d","... filesystem 2026.11-1 -> 2026.12-1 ..."],["d","(2/9) Keeping the Sunshine OS identity..."],[""],
   ["p","$ sunshine-identity check"],["ok","Identity OK: Sunshine OS"],[""],
-  ["p","$ cat /etc/os-release | head -3"],["","NAME=\"Sunshine OS\""],["","PRETTY_NAME=\"Sunshine OS\""],["","ID=sunshineos"],[""],
-  ["d","Without the hook, that update would have turned this back into plain \"Arch Linux\"."]]}
+  ["p","$ head -3 /etc/os-release"],["","NAME=\"Sunshine OS\""],["","PRETTY_NAME=\"Sunshine OS\""],["","ID=sunshineos"],[""],
+  ["d","A pacman hook runs this after every update of the filesystem package."],["d","Without it, an update would turn the system back into plain \"Arch Linux\"."]]}
 };
 var pre=document.getElementById("tpre"), ttl=document.getElementById("ttl"), run=0;
 function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
