@@ -59,8 +59,11 @@ nav .btn{padding:6px 14px}
 .hero .in>:nth-child(2){animation-delay:.1s}.hero .in>:nth-child(3){animation-delay:.2s}.hero .in>:nth-child(4){animation-delay:.3s}.hero .in>:nth-child(5){animation-delay:.4s}
 .pill{display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border:1px solid var(--line2);background:color-mix(in srgb,var(--bg) 80%,transparent);font-size:13px;color:var(--dim);text-decoration:none}
 .pill:hover{color:var(--fg);border-color:var(--accent)}
-.hlogo{width:84px;height:84px}
-#wm{width:100%;margin:34px 0 40px}
+.stage{position:relative;width:100%;height:384px;display:flex;justify-content:center;margin:0 0 34px}
+.hlogo{position:relative;z-index:1;width:384px;height:384px}
+#wm{position:absolute;left:0;right:0;top:54%;width:100%}
+@media(max-width:900px){.stage,.hlogo{height:256px}.hlogo{width:256px}}
+@media(max-width:560px){.stage,.hlogo{height:192px}.hlogo{width:192px}}
 .hero h1{font-size:clamp(22px,3.4vw,34px);font-weight:500;letter-spacing:-.02em;line-height:1.25;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p.tag{margin:0 0 30px;color:var(--dim);font:400 15px/1.75 "JetBrains Mono",monospace;max-width:620px;text-wrap:balance}
@@ -112,10 +115,16 @@ kbd{font-size:12px;border:1px solid var(--line2);padding:1px 7px;background:var(
 :root[data-theme="noon"] .term2 .ok{color:#2f7d1f}
 
 /* stats */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line)}
-@media(max-width:700px){.stats{grid-template-columns:1fr}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:44px;background:var(--line);border:1px solid var(--line)}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.stats{grid-template-columns:1fr}}
+.cmds{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}
+.cmd2{background:var(--bg);padding:18px 22px}
+.cmd2 p{color:var(--dim);font-size:14px;margin-top:4px}
+.cmd2 code{font-size:12.5px;color:var(--accent)}
+@media(max-width:760px){.cmds{grid-template-columns:1fr}}
 .stat{background:var(--bg);padding:28px}
-.stat b{display:block;font-size:clamp(34px,5vw,52px);font-weight:500;letter-spacing:-.05em;color:var(--accent);line-height:1;margin-bottom:10px}
+.stat b{display:block;font-size:clamp(28px,3.6vw,44px);font-weight:500;letter-spacing:-.05em;color:var(--accent);line-height:1;margin-bottom:10px}
 .stat span{color:var(--dim);font-size:14px}
 
 /* steps */
@@ -157,8 +166,7 @@ footer a:hover{color:var(--accent)}
 <header class="hero" id="top">
   <canvas id="px" aria-hidden="true"></canvas>
   <div class="in">
-    <img class="hlogo pixel" src="assets/logo-pixel.png" alt="Sunshine OS logo">
-    <div id="wm" role="img" aria-label="Sunshine OS"></div>
+    <div class="stage"><div id="wm" role="img" aria-label="Sunshine OS"></div><img class="hlogo pixel" src="assets/logo-pixel.png" alt="Sunshine OS logo"></div>
     <p class="tag">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
       <a class="btn primary" href="#install" id="herodl"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>Download</a>
@@ -181,14 +189,17 @@ footer a:hover{color:var(--accent)}
     <p class="lead rv">What is included on top of a base Arch install.</p>
     <div class="grid g3 rv">
       <div class="card"><div class="n">01</div><h3>Two environments</h3><p>The live session runs KDE Plasma. The installer adds Hyprland with a Quickshell desktop.</p></div>
-      <div class="card"><div class="n">02</div><h3>Btrfs snapshots</h3><p>On btrfs, every package update is wrapped in snapshots. Older states can be booted from the GRUB menu and restored with <code>snapper</code> and <code>Btrfs Assistant</code>.</p></div>
-      <div class="card"><div class="n">03</div><h3>System doctor</h3><p><code>sunshine-doctor</code> checks boot files, keyring, disk, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></div>
-      <div class="card"><div class="n">04</div><h3>Identity guard</h3><p>A plain Arch update would turn the system back into &ldquo;Arch Linux&rdquo;. A pacman hook, <code>sunshine-identity</code>, keeps it Sunshine OS.</p></div>
-      <div class="card"><div class="n">05</div><h3>Sunshine Store</h3><p>One application for pacman, the AUR and Flatpak. Installed packages are marked and sources are color coded.</p></div>
-      <div class="card"><div class="n">06</div><h3>Disk encryption</h3><p>Full-system encryption is a single option in the graphical installer, or one question in the text installer. One passphrase at boot, asked by GRUB.</p></div>
-      <div class="card"><div class="n">07</div><h3>Phone and AirPods</h3><p>KDE Connect pairs a phone for files, notifications and clipboard. AirPods report battery for each pod and the case, with noise control.</p></div>
-      <div class="card"><div class="n">08</div><h3>Installers</h3><p>A graphical installer (Calamares) and a text one. Each package is retried three times, existing packages are never removed, and the install continues on failure.</p></div>
-      <div class="card"><div class="n">09</div><h3>Containerized build</h3><p><code>./build.sh</code> assembles the ISO inside a Docker container, so building it never modifies the host machine.</p></div>
+      <div class="card"><div class="n">02</div><h3>Btrfs snapshots</h3><p><code>snapper</code> takes timeline snapshots, <code>snap-pac</code> wraps every package update in a pre and post snapshot, and <code>grub-btrfs</code> lists them as bootable entries in the GRUB menu.</p></div>
+      <div class="card"><div class="n">03</div><h3>System doctor</h3><p><code>sunshine-doctor</code> checks identity, package manager, boot files, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></div>
+      <div class="card"><div class="n">04</div><h3>Boot repair</h3><p><code>sunshine-boot-repair</code> rebuilds the initramfs, checks the kernel image and regenerates GRUB and its menu on an installed system.</p></div>
+      <div class="card"><div class="n">05</div><h3>Package manager repair</h3><p><code>sunshine-fix-pacman</code> clears stale locks, repairs a broken keyring, refreshes stale mirrors and rebuilds damaged databases.</p></div>
+      <div class="card"><div class="n">06</div><h3>Identity guard</h3><p>A plain Arch update would turn the system back into &ldquo;Arch Linux&rdquo;. A pacman hook, <code>sunshine-identity</code>, keeps it Sunshine OS.</p></div>
+      <div class="card"><div class="n">07</div><h3>Sunshine Store</h3><p>One application for pacman, the AUR and Flatpak. Installed packages are marked and sources are color coded.</p></div>
+      <div class="card"><div class="n">08</div><h3>Disk encryption</h3><p>Full-system encryption is one option in the graphical installer, or one question in the text installer. One passphrase at boot, asked by GRUB.</p></div>
+      <div class="card"><div class="n">09</div><h3>Updates</h3><p>A user timer reports available updates. <code>sunshine-update</code> runs them in a terminal with a polkit password prompt.</p></div>
+      <div class="card"><div class="n">10</div><h3>Fish by default</h3><p>Users get fish as their login shell. <code>sunshine-info</code> prints system information to paste when asking for help.</p></div>
+      <div class="card"><div class="n">11</div><h3>Phone and AirPods</h3><p>KDE Connect pairs a phone for files, notifications and clipboard. AirPods report battery for each pod and the case, with noise control.</p></div>
+      <div class="card"><div class="n">12</div><h3>Installers and build</h3><p>Graphical (Calamares) and text installers for UEFI and BIOS, on btrfs or ext4. The ISO is built by <code>./build.sh</code> inside a Docker container, so the host is never modified.</p></div>
     </div>
   </div>
 </section>
@@ -203,6 +214,16 @@ footer a:hover{color:var(--accent)}
       <button data-demo="id">sunshine-identity</button>
     </div>
     <div class="term2"><div class="bar"><i></i><i></i><i></i><span id="ttl" style="margin-left:8px">user@sunshine:~</span></div><pre id="tpre" aria-live="off"></pre></div>
+    <div class="cmds rv">
+      <div class="cmd2"><span class="inl">sunshine-doctor</span><p>Check identity, package manager, desktop, boot and restore points. <code>--fix</code> repairs.</p></div>
+      <div class="cmd2"><span class="inl">sunshine-snapshot</span><p>List, create or delete restore points (btrfs snapshots).</p></div>
+      <div class="cmd2"><span class="inl">sunshine-boot-repair</span><p>Repair initramfs, kernel image, GRUB and the boot menu.</p></div>
+      <div class="cmd2"><span class="inl">sunshine-fix-pacman</span><p>Repair locks, keyring, mirrors and databases.</p></div>
+      <div class="cmd2"><span class="inl">sunshine-cleanup</span><p>Free disk space: old package files, unused packages (asks first), old logs, old restore points.</p></div>
+      <div class="cmd2"><span class="inl">sunshine-update</span><p>Run system updates from a terminal with a polkit prompt.</p></div>
+      <div class="cmd2"><span class="inl">sunshine-identity</span><p>Check the Sunshine OS identity. A pacman hook runs it after every update of the filesystem package.</p></div>
+      <div class="cmd2"><span class="inl">sunshine-info</span><p>Print system information, for support requests.</p></div>
+    </div>
   </div>
 </section>
 
@@ -237,9 +258,11 @@ footer a:hover{color:var(--accent)}
     <h2 class="rv"><span class="slash">/</span> Under the hood</h2>
     <p class="lead rv">Tested end to end in virtual machines: live boot, graphical and text installs on UEFI and BIOS, btrfs and ext4.</p>
     <div class="stats rv">
-      <div class="stat"><b>15s</b><span>live boot</span></div>
-      <div class="stat"><b>113</b><span>desktop packages installed per run</span></div>
-      <div class="stat"><b>3&times;</b><span>retries per package, then carry on</span></div>
+      <div class="stat"><b>259</b><span>packages in the live image</span></div>
+      <div class="stat"><b>115</b><span>packages in the Hyprland desktop set</span></div>
+      <div class="stat"><b>8</b><span>maintenance and repair commands</span></div>
+      <div class="stat"><b>UEFI+BIOS</b><span>boot modes, installable on btrfs or ext4</span></div>
+    </div>
     </div>
   </div>
 </section>
