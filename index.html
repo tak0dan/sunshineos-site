@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sunshine OS</title>
-<meta name="description" content="Sunshine OS: Arch Linux made friendly. Plasma live session, Hyprland desktop, restore points, one-click installer.">
+<meta name="description" content="Sunshine OS: an Arch-based operating system for terminal and desktop, with btrfs snapshots, system repair tools and a Hyprland desktop.">
 <meta name="theme-color" content="#0e0a1a">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,10 +59,11 @@ nav .btn{padding:6px 14px}
 .hero .in>:nth-child(2){animation-delay:.1s}.hero .in>:nth-child(3){animation-delay:.2s}.hero .in>:nth-child(4){animation-delay:.3s}.hero .in>:nth-child(5){animation-delay:.4s}
 .pill{display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border:1px solid var(--line2);background:color-mix(in srgb,var(--bg) 80%,transparent);font-size:13px;color:var(--dim);text-decoration:none}
 .pill:hover{color:var(--fg);border-color:var(--accent)}
-#wm{width:100%;margin:46px 0 54px}
+.hlogo{width:84px;height:84px}
+#wm{width:100%;margin:34px 0 40px}
 .hero h1{font-size:clamp(22px,3.4vw,34px);font-weight:500;letter-spacing:-.02em;line-height:1.25;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--accent)}
-.hero p.tag{margin:14px 0 30px;color:var(--dim);font:400 16px/1.7 "JetBrains Mono",monospace;max-width:560px;text-wrap:balance}
+.hero p.tag{margin:0 0 30px;color:var(--dim);font:400 15px/1.75 "JetBrains Mono",monospace;max-width:620px;text-wrap:balance}
 .hero .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
 /* sections */
@@ -142,7 +143,7 @@ footer a:hover{color:var(--accent)}
     <a class="brand" href="#top"><img class="pixel" src="assets/favicon.png" alt="">Sunshine OS</a>
     <div class="links">
       <a href="#features">Features</a>
-      <a href="#safety">Safety net</a>
+      <a href="#safety">Tools</a>
       <a href="#themes">Themes</a>
       <a href="#install">Install</a>
     </div>
@@ -156,21 +157,20 @@ footer a:hover{color:var(--accent)}
 <header class="hero" id="top">
   <canvas id="px" aria-hidden="true"></canvas>
   <div class="in">
-    <a class="pill" href="#safety">Restore points, a doctor and an identity guard <span>&rarr;</span></a>
+    <img class="hlogo pixel" src="assets/logo-pixel.png" alt="Sunshine OS logo">
     <div id="wm" role="img" aria-label="Sunshine OS"></div>
-    <h1>Arch Linux, <em>made friendly.</em></h1>
-    <p class="tag">Boots in 15 seconds, installs itself, and can always go back.</p>
+    <p class="tag">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
-      <a class="btn primary" href="#install" id="herodl"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>Get Sunshine OS</a>
-      <a class="btn ghost" href="#safety"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg>See the safety net</a>
+      <a class="btn primary" href="#install" id="herodl"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>Download</a>
+      <a class="btn ghost" href="https://github.com/tak0dan/SunshineOS"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Source</a>
     </div>
   </div>
-</header>
+  </header>
 
 <section id="about">
   <div class="wrap">
-    <div class="huge rv">A real Arch system,<br>set up <span>properly.</span></div>
-    <p class="lead rv">Sunshine OS is a standalone Arch-based distribution built with archiso and installed with Calamares. It is configured the way a friend who knows Linux would configure it for you, and it keeps looking after the system once it is installed.</p>
+    <div class="huge rv">Arch underneath.<br>Configured for <span>daily use.</span></div>
+    <p class="lead rv">Sunshine OS is a standalone Arch-based distribution, built with archiso and installed with Calamares. It is configured to be used from the terminal as well as from a graphical desktop, and it ships with btrfs snapshot support and tools that check and repair the system.</p>
     <div class="quote rv">Nothing in the build touches the host. The ISO is assembled inside a container.<small>// how Sunshine OS is built</small></div>
   </div>
 </section>
@@ -178,25 +178,25 @@ footer a:hover{color:var(--accent)}
 <section id="features">
   <div class="wrap">
     <h2 class="rv"><span class="slash">/</span> Features</h2>
-    <p class="lead rv">Everything Arch gives you, plus the parts that usually take an afternoon to set up.</p>
+    <p class="lead rv">What is included on top of a base Arch install.</p>
     <div class="grid g3 rv">
-      <div class="card"><div class="n">01</div><h3>Two desktops</h3><p>Start in a calm KDE Plasma live session. The installer adds <b>Hyprland</b> with a full Quickshell desktop, so you can grow into tiling when you want.</p></div>
-      <div class="card"><div class="n">02</div><h3>Restore points</h3><p>On btrfs, every update is wrapped in snapshots. Something broke? Pick an older state in the boot menu, with <code>snapper</code> and <code>Btrfs Assistant</code>.</p></div>
-      <div class="card"><div class="n">03</div><h3>The doctor</h3><p><code>sunshine-doctor</code> checks boot files, keyring, disk, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></div>
-      <div class="card"><div class="n">04</div><h3>Identity guard</h3><p>A plain Arch update would quietly turn the system back into &ldquo;Arch Linux&rdquo;. A pacman hook, <code>sunshine-identity</code>, keeps it Sunshine OS.</p></div>
-      <div class="card"><div class="n">05</div><h3>Sunshine Store</h3><p>One app for pacman, the AUR and Flatpak. Installed apps are marked, sources are color coded, and it never hides what it is doing.</p></div>
-      <div class="card"><div class="n">06</div><h3>Disk encryption</h3><p>Tick one box (or answer one question in the text installer) and the whole system is encrypted. One passphrase at boot, asked by GRUB.</p></div>
-      <div class="card"><div class="n">07</div><h3>Phone and AirPods</h3><p>KDE Connect pairs your phone for files, notifications and clipboard. AirPods report battery for each pod and the case, plus noise control.</p></div>
-      <div class="card"><div class="n">08</div><h3>Simple installer</h3><p>A graphical installer (Calamares) and a text one. It retries every package three times, never removes yours, and keeps going.</p></div>
-      <div class="card"><div class="n">09</div><h3>Containerized build</h3><p><code>./build.sh</code> assembles the ISO inside a Docker container, so building it never modifies your own machine.</p></div>
+      <div class="card"><div class="n">01</div><h3>Two environments</h3><p>The live session runs KDE Plasma. The installer adds Hyprland with a Quickshell desktop.</p></div>
+      <div class="card"><div class="n">02</div><h3>Btrfs snapshots</h3><p>On btrfs, every package update is wrapped in snapshots. Older states can be booted from the GRUB menu and restored with <code>snapper</code> and <code>Btrfs Assistant</code>.</p></div>
+      <div class="card"><div class="n">03</div><h3>System doctor</h3><p><code>sunshine-doctor</code> checks boot files, keyring, disk, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></div>
+      <div class="card"><div class="n">04</div><h3>Identity guard</h3><p>A plain Arch update would turn the system back into &ldquo;Arch Linux&rdquo;. A pacman hook, <code>sunshine-identity</code>, keeps it Sunshine OS.</p></div>
+      <div class="card"><div class="n">05</div><h3>Sunshine Store</h3><p>One application for pacman, the AUR and Flatpak. Installed packages are marked and sources are color coded.</p></div>
+      <div class="card"><div class="n">06</div><h3>Disk encryption</h3><p>Full-system encryption is a single option in the graphical installer, or one question in the text installer. One passphrase at boot, asked by GRUB.</p></div>
+      <div class="card"><div class="n">07</div><h3>Phone and AirPods</h3><p>KDE Connect pairs a phone for files, notifications and clipboard. AirPods report battery for each pod and the case, with noise control.</p></div>
+      <div class="card"><div class="n">08</div><h3>Installers</h3><p>A graphical installer (Calamares) and a text one. Each package is retried three times, existing packages are never removed, and the install continues on failure.</p></div>
+      <div class="card"><div class="n">09</div><h3>Containerized build</h3><p><code>./build.sh</code> assembles the ISO inside a Docker container, so building it never modifies the host machine.</p></div>
     </div>
   </div>
 </section>
 
 <section id="safety">
   <div class="wrap">
-    <h2 class="rv"><span class="slash">/</span> The safety net</h2>
-    <p class="lead rv">Commands that keep the system healthy and recognisably yours. This output was captured from a test install.</p>
+    <h2 class="rv"><span class="slash">/</span> System tools</h2>
+    <p class="lead rv">Commands included for checking and repairing the system. Output captured from a test install.</p>
     <div class="tabs">
       <button class="on" data-demo="doctor">sunshine-doctor</button>
       <button data-demo="snap">sunshine-snapshot</button>
@@ -281,7 +281,7 @@ copy /b sunshineos-*.iso.part* sunshineos.iso</pre>
   <div class="wrap">
     <div class="brand" style="color:var(--fg)"><img class="pixel" src="assets/favicon.png" alt="">Sunshine OS</div>
     <div class="cols">
-      <div><h4>Explore</h4><a href="#features">Features</a><a href="#safety">Safety net</a><a href="#install">Install</a></div>
+      <div><h4>Explore</h4><a href="#features">Features</a><a href="#safety">Tools</a><a href="#install">Install</a></div>
       <div><h4>Project</h4><a href="https://github.com/tak0dan/SunshineOS">Repository</a><a href="https://github.com/tak0dan/SunshineOS/releases">Releases</a><a href="https://github.com/tak0dan/SunshineOS/issues">Issues</a></div>
     </div>
     <p style="margin-top:30px">Built on <a style="display:inline" href="https://archlinux.org">Arch Linux</a>, KDE Plasma, Hyprland and <a style="display:inline" href="https://github.com/end-4/dots-hyprland">end-4's dots</a>.</p>
