@@ -105,19 +105,23 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
 .pill:hover{background:var(--brand);color:var(--bg);border-color:var(--brand)}
 .pill svg{width:16px;height:16px;flex:none}
 .pill[hidden]{display:none}
-.stage{--S:768px;--G:128px;position:relative;width:var(--S);max-width:100%;height:var(--S)}
-@media(max-width:1180px){.stage{--S:512px;--G:96px}}
-@media(max-width:760px){.stage{--S:320px;--G:64px}}
-.half{position:absolute;left:0;top:0;width:var(--S);height:var(--S)}
-.half.top{clip-path:inset(0 0 calc(50% + var(--G) / 2) 0);animation:cutT 1.1s .5s cubic-bezier(.65,0,.2,1) both}
-.half.bot{clip-path:inset(calc(50% + var(--G) / 2) 0 0 0);animation:cutB 1.1s .5s cubic-bezier(.65,0,.2,1) both}
-@keyframes cutT{from{clip-path:inset(0 0 50% 0)}}
-@keyframes cutB{from{clip-path:inset(50% 0 0 0)}}
-.band{position:absolute;left:0;right:0;top:calc(50% - var(--G) / 2);height:var(--G);background:color-mix(in srgb,var(--field-bg) 94%,transparent);animation:bandOpen 1.1s .5s cubic-bezier(.65,0,.2,1) both}
-@keyframes bandOpen{from{transform:scaleY(0)}}
+.stage{--S:768px;--G:120px;position:relative;width:var(--S);max-width:100%;height:var(--S)}
+@media(max-width:1180px){.stage{--S:512px;--G:80px}}
+@media(max-width:760px){.stage{--S:320px;--G:50px}}
+/* the animated logo: 64 x 64 cells, 12 / 8 / 5 px per cell */
+#logo{position:absolute;left:0;top:0;width:var(--S);height:var(--S);image-rendering:pixelated;image-rendering:crisp-edges}
+/* the cut-out strip: base state is the finished look; with JS the strip is hidden until the build-up has finished */
+.band{position:absolute;left:0;right:0;top:calc(50% - var(--G) / 2);height:var(--G);background:color-mix(in srgb,var(--field-bg) 94%,transparent)}
 .edge{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand) 14%,var(--brand) 86%,transparent);opacity:.7}
-.edge.e1{top:calc(50% - var(--G) / 2);animation:draw .5s cubic-bezier(.2,.7,.2,1) both,slice1 1.1s .5s cubic-bezier(.65,0,.2,1) both}
-.edge.e2{top:calc(50% + var(--G) / 2);animation:draw .5s cubic-bezier(.2,.7,.2,1) both,slice2 1.1s .5s cubic-bezier(.65,0,.2,1) both}
+.edge.e1{top:calc(50% - var(--G) / 2)}
+.edge.e2{top:calc(50% + var(--G) / 2)}
+.stage.js:not(.cut) .band{visibility:hidden}
+.stage.js:not(.lines) .edge{opacity:0}
+.stage.lines .edge{animation:draw .5s cubic-bezier(.2,.7,.2,1) both}
+.stage.cut .edge.e1{animation:draw .5s cubic-bezier(.2,.7,.2,1) both,slice1 1.1s cubic-bezier(.65,0,.2,1) both}
+.stage.cut .edge.e2{animation:draw .5s cubic-bezier(.2,.7,.2,1) both,slice2 1.1s cubic-bezier(.65,0,.2,1) both}
+.stage.cut .band{animation:bandOpen 1.1s cubic-bezier(.65,0,.2,1) both}
+@keyframes bandOpen{from{transform:scaleY(0)}}
 @keyframes draw{from{scale:0 1;opacity:0}}
 @keyframes slice1{from{translate:0 calc(var(--G) / 2)}}
 @keyframes slice2{from{translate:0 calc(var(--G) / -2)}}
@@ -311,7 +315,7 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
   <canvas id="px" aria-hidden="true"></canvas>
   <div class="col">
     <a class="pill" id="relpill" href="#releases" hidden><span id="relpilltext"></span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
-    <div class="stage" id="stage" role="img" aria-label="Sunshine OS"><i class="band"></i><img class="half top pixel" src="assets/logo-pixel.png" alt=""><img class="half bot pixel" src="assets/logo-pixel.png" alt=""><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
+    <div class="stage" id="stage" role="img" aria-label="Sunshine OS"><i class="band"></i><canvas id="logo" width="64" height="64"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
     <h1 class="sr-only">Sunshine OS</h1>
     <p class="d">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
@@ -638,6 +642,45 @@ function Field(cv,host,o){
   go();setTimeout(go,60);
 }
 Field($("#px"),hero,{intro:true,interactive:true});
+/* animated logo: build-up once, then the 10 s idle loop (assets/logo-anim); the strip is cut out of it after the build-up */
+(function(){
+  var stage=$("#stage"), cv=$("#logo"), ctx=cv.getContext("2d");
+  var CROP={x:9,y:3}, N=64, MID=32, BAND=10, CUT_AT=4.7, CUT_DUR=1.1, base="assets/logo-anim/";
+  ctx.imageSmoothingEnabled=false;
+  function img(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src})}
+  function ease(x){x=Math.min(1,Math.max(0,x));return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
+  function cutRows(t){return reduce?BAND:Math.round(BAND*ease((t-CUT_AT)/CUT_DUR))}
+  function fallback(){img("assets/logo-pixel.png").then(function(i){ctx.drawImage(i,0,0,N,N);cut(BAND)})}
+  function cut(rows){if(rows>0){var y0=Math.floor(MID-rows/2);ctx.clearRect(0,y0,N,rows)}}
+  fetch(base+"sprite-lite.json").then(function(r){return r.json()}).then(function(m){
+    return Promise.all([img(base+m.intro.file),img(base+m.loop.file)]).then(function(im){
+      var fw=m.frame_w,fh=m.frame_h,cols=m.cols,fps=m.fps,introDur=m.intro.frames/fps,last="",vis=true,start=0;
+      function draw(sheet,i,t){
+        ctx.clearRect(0,0,N,N);
+        ctx.drawImage(sheet,(i%cols)*fw+CROP.x,Math.floor(i/cols)*fh+CROP.y,N,N,0,0,N,N);
+        cut(cutRows(t));
+      }
+      if(reduce){draw(im[0],m.intro.frames-1,99);return}
+      stage.classList.add("js");
+      start=performance.now();window.SUNSHINE_T0=start;
+      new IntersectionObserver(function(es){vis=es[0].isIntersecting}).observe(cv);
+      function tick(now){
+        var t=(now-start)/1000;
+        if(t>=CUT_AT-.5&&!stage.classList.contains("lines"))stage.classList.add("lines");
+        if(t>=CUT_AT&&!stage.classList.contains("cut"))stage.classList.add("cut");
+        if(vis){
+          var sheet,i;
+          if(t<introDur){sheet=im[0];i=Math.min(m.intro.frames-1,Math.floor(t*fps))}
+          else{sheet=im[1];i=Math.floor((t-introDur)*fps)%m.loop.frames}
+          var key=(sheet===im[0]?"a":"b")+i+":"+cutRows(t);
+          if(key!==last){last=key;draw(sheet,i,t)}
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }).catch(fallback);
+})();
 /* name written into the strip cut through the logo */
 (function(){
   var stage=$("#stage"),cv=$("#wm"),ctx=cv.getContext("2d");
@@ -650,9 +693,9 @@ Field($("#px"),hero,{intro:true,interactive:true});
   function size(){var d=Math.min(devicePixelRatio||1,2),sw=stage.getBoundingClientRect().width,G=parseFloat(getComputedStyle(stage).getPropertyValue("--G"))||128,S=parseFloat(getComputedStyle(stage).getPropertyValue("--S"))||768;
     P=Math.max(3,Math.floor(sw*.94/COLS));w=COLS*P;h=7*P;cv.style.width=w+"px";cv.style.height=h+"px";cv.style.top=(S/2-h/2)+"px";cv.width=Math.round(w*d);cv.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0)}
   function draw(now){
-    var t=(now-t0)/1000;ctx.clearRect(0,0,w,h);var sz=Math.max(2,Math.round(P*.8)),off=Math.round((P-sz)/2);
+    var t=(now-(window.SUNSHINE_T0||t0))/1000;ctx.clearRect(0,0,w,h);var sz=Math.max(2,Math.round(P*.8)),off=Math.round((P-sz)/2);
     cells.forEach(function(q){
-      var k=reduce?1:Math.min(1,Math.max(0,(t-1.7-q.d)/.4));if(k<=0)return;k=Math.round(k*3)/3;
+      var k=reduce?1:Math.min(1,Math.max(0,(t-5.85-q.d)/.4));if(k<=0)return;k=Math.round(k*3)/3;
       var p=pal[q.r],gl=(reduce||k<1)?0:Math.max(0,Math.sin(t*.8-q.c*.3)-.94)*14;
       ctx.fillStyle="rgba("+p[0]+","+p[1]+","+p[2]+","+k.toFixed(2)+")";ctx.fillRect(q.c*P+off,q.r*P+off,sz,sz);
       if(gl>.2){ctx.fillStyle="rgba("+pal.f[0]+","+pal.f[1]+","+pal.f[2]+","+Math.min(.55,gl*.5).toFixed(2)+")";ctx.fillRect(q.c*P+off,q.r*P+off,sz,sz)}
