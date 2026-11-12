@@ -49,9 +49,11 @@ nav .btn{padding:6px 14px}
 .themebtn{font:500 12px "JetBrains Mono",monospace;background:none;color:var(--dim);border:1px solid var(--line);padding:5px 9px;cursor:pointer}
 .themebtn:hover{color:var(--fg);border-color:var(--line2)}
 @media(max-width:820px){nav .links{display:none}}
+.brand{white-space:nowrap}
+@media(max-width:480px){nav .ico{display:none}nav .wrap{gap:14px}}
 
 /* hero */
-.hero{position:relative;min-height:min(calc(100vh - 56px),900px);min-height:min(calc(100svh - 56px),900px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 0 80px;overflow:hidden}
+.hero{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 0 80px;overflow:hidden}
 #px{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(transparent,var(--bg));z-index:1;pointer-events:none}
 .hero .in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 24px;width:100%}
@@ -59,11 +61,11 @@ nav .btn{padding:6px 14px}
 .hero .in>:nth-child(2){animation-delay:.1s}.hero .in>:nth-child(3){animation-delay:.2s}.hero .in>:nth-child(4){animation-delay:.3s}.hero .in>:nth-child(5){animation-delay:.4s}
 .pill{display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border:1px solid var(--line2);background:color-mix(in srgb,var(--bg) 80%,transparent);font-size:13px;color:var(--dim);text-decoration:none}
 .pill:hover{color:var(--fg);border-color:var(--accent)}
-.stage{position:relative;width:100%;height:384px;display:flex;justify-content:center;margin:0 0 34px}
-.hlogo{position:relative;z-index:1;width:384px;height:384px}
-#wm{position:absolute;left:0;right:0;top:54%;width:100%}
-@media(max-width:900px){.stage,.hlogo{height:256px}.hlogo{width:256px}}
-@media(max-width:560px){.stage,.hlogo{height:192px}.hlogo{width:192px}}
+.stage{position:relative;width:100%;height:768px;display:flex;justify-content:center;margin:0 0 24px}
+.hlogo{position:relative;z-index:1;width:768px;height:768px}
+#wm{display:none}
+@media(max-width:1180px){.stage,.hlogo{height:512px}.hlogo{width:512px}}
+@media(max-width:760px){.stage,.hlogo{height:320px}.hlogo{width:320px}}
 .hero h1{font-size:clamp(22px,3.4vw,34px);font-weight:500;letter-spacing:-.02em;line-height:1.25;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p.tag{margin:0 0 30px;color:var(--dim);font:400 15px/1.75 "JetBrains Mono",monospace;max-width:620px;text-wrap:balance}
@@ -397,6 +399,7 @@ var FONT={
 var TEXT="SUNSHINE OS", COLS=TEXT.length*6-1;
 var cells=[]; // wordmark cells {c,r}
 (function(){ for(var k=0;k<TEXT.length;k++){ var g=FONT[TEXT[k]]; if(!g) continue; for(var r=0;r<7;r++)for(var c=0;c<5;c++) if(g[r][c]==="#") cells.push({c:k*6+c,r:r,d:0}); } })();
+cells.length=0; // no wordmark: the logo is the hero
 function hash(i,j){ var h=(i*374761393+j*668265263)^0x5bd1e995; h=(h^(h>>>13))*1274126177; return ((h^(h>>>16))>>>0)/4294967295; }
 function rgb(v){ v=v.trim(); if(v[0]==="#"){ if(v.length===4) v="#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]; return [parseInt(v.slice(1,3),16),parseInt(v.slice(3,5),16),parseInt(v.slice(5,7),16)]; } return [255,177,46]; }
 var W,H,P,ox,oy,wc0,wr0,pal,t0=performance.now(),raf=0;
