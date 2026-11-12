@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunshine OS</title>
+<meta name="description" content="Sunshine OS: Arch Linux made friendly. Plasma live session, Hyprland desktop, restore points, one-click installer.">
+<meta name="theme-color" content="#0e1422">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1422; --bg2:#141c2f; --bg3:#1a2338; --ink:#fdf0dc; --dim:#a89c88;
+  --orange:#ff9654; --gold:#ffc43d; --peach:#ffcba0; --rose:#ff8f7a; --green:#8fd16a; --line:#2a3550;
+  --px:4px;
+  --head:"Press Start 2P", ui-monospace, monospace; --body:"VT323", ui-monospace, "Courier New", monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto;image-rendering:pixelated}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:22px;line-height:1.35;
+  padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));overflow-x:hidden}
+a{color:var(--gold)} a:hover{color:var(--orange)}
+.wrap{max-width:1040px;margin:0 auto}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+
+/* scanlines + vignette over everything */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+
+/* pixel borders: stepped corners made from box-shadows */
+.px{position:relative;background:var(--bg2);box-shadow:
+  calc(var(--px)*-1) 0 0 0 var(--line), var(--px) 0 0 0 var(--line), 0 calc(var(--px)*-1) 0 0 var(--line), 0 var(--px) 0 0 var(--line)}
+.px.hot{box-shadow:calc(var(--px)*-1) 0 0 0 var(--orange), var(--px) 0 0 0 var(--orange), 0 calc(var(--px)*-1) 0 0 var(--orange), 0 var(--px) 0 0 var(--orange)}
+
+/* nav */
+nav{position:sticky;top:0;z-index:40;background:rgba(14,20,34,.94);border-bottom:var(--px) solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:18px;padding:12px 0;flex-wrap:wrap}
+.brand{font-family:var(--head);font-size:13px;color:var(--gold);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand canvas{width:24px;height:24px}
+nav a.l{font-family:var(--head);font-size:10px;color:var(--ink);text-decoration:none;padding:6px 4px}
+nav a.l:hover{color:var(--orange)}
+nav .sp{flex:1}
+
+/* buttons */
+.btn{display:inline-block;font-family:var(--head);font-size:12px;color:#2a1a0e;background:var(--gold);text-decoration:none;
+  padding:14px 18px;position:relative;box-shadow:inset calc(var(--px)*-1) calc(var(--px)*-1) 0 0 #c98a1c, inset var(--px) var(--px) 0 0 #ffe08a,
+  calc(var(--px)*-1) 0 0 0 #0e1422, var(--px) 0 0 0 #0e1422, 0 calc(var(--px)*-1) 0 0 #0e1422, 0 var(--px) 0 0 #0e1422;cursor:pointer;border:0}
+.btn:hover{background:var(--orange);color:#2a1a0e}
+.btn:active{transform:translateY(var(--px))}
+.btn.alt{background:var(--bg3);color:var(--ink);box-shadow:inset calc(var(--px)*-1) calc(var(--px)*-1) 0 0 #0e1422, inset var(--px) var(--px) 0 0 #34415f,
+  calc(var(--px)*-1) 0 0 0 #0e1422, var(--px) 0 0 0 #0e1422, 0 calc(var(--px)*-1) 0 0 #0e1422, 0 var(--px) 0 0 #0e1422}
+.btn.alt:hover{background:var(--line);color:var(--gold)}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:var(--px) solid var(--line);min-height:560px;display:flex;align-items:center}
+#bg{position:absolute;inset:0;width:100%;height:100%;opacity:.55;z-index:0}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,20,34,.35),rgba(14,20,34,.92));z-index:1}
+#stars{position:absolute;inset:0;z-index:1;pointer-events:none}
+.star{position:absolute;width:var(--px);height:var(--px);background:var(--peach);animation:tw 1.6s steps(2,end) infinite}
+@keyframes tw{0%{opacity:1}50%{opacity:.15}100%{opacity:1}}
+.cloud{position:absolute;z-index:1;height:32px;image-rendering:pixelated;animation:drift linear infinite;opacity:.5}
+@keyframes drift{from{transform:translateX(-200px)}to{transform:translateX(calc(100vw + 200px))}}
+.hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding:48px 0}
+h1{font-family:var(--head);font-size:clamp(26px,5vw,52px);line-height:1.25;margin:0 0 18px;color:var(--gold);text-shadow:var(--px) var(--px) 0 #7a3b12}
+h1 span{color:var(--orange)}
+.tag{font-size:28px;color:var(--ink);margin:0 0 22px;max-width:30ch}
+.cta{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}
+.sunbox{display:flex;justify-content:center}
+#sun{width:min(320px,70vw);height:min(320px,70vw)}
+.cursor{display:inline-block;width:.6em;height:1em;background:var(--gold);vertical-align:-.12em;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* ticker */
+.ticker{overflow:hidden;white-space:nowrap;background:var(--gold);color:#2a1a0e;font-family:var(--head);font-size:11px;padding:12px 0;border-bottom:var(--px) solid #c98a1c}
+.ticker div{display:inline-block;animation:tick 40s linear infinite;padding-left:100%}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+section{padding:72px 0}
+h2{font-family:var(--head);font-size:clamp(16px,3vw,24px);color:var(--gold);margin:0 0 10px}
+h2::before{content:"> ";color:var(--orange)}
+.sub{color:var(--dim);font-size:24px;margin:0 0 36px;max-width:60ch}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+.card{padding:22px}
+.card canvas{width:48px;height:48px;margin-bottom:12px;display:block}
+.card h3{font-family:var(--head);font-size:12px;color:var(--peach);margin:0 0 10px;line-height:1.5}
+.card p{margin:0;color:var(--ink)}
+.card code,.inl{font-family:var(--body);color:var(--gold);background:#0e1422;padding:0 6px}
+.card:hover{transform:translate(0,calc(var(--px)*-1))}
+.card{transition:transform .1s steps(2)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(16px)}
+.rv.in{animation:pop .5s steps(5,end) forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+
+/* terminal */
+.term{margin-top:8px}
+.term .bar{display:flex;gap:8px;align-items:center;padding:10px 14px;background:var(--bg3);font-family:var(--head);font-size:10px;color:var(--dim)}
+.term .bar i{width:12px;height:12px;display:inline-block;background:var(--rose)} .term .bar i:nth-child(2){background:var(--gold)} .term .bar i:nth-child(3){background:var(--green)}
+.term pre{margin:0;padding:18px 18px 22px;min-height:420px;font-family:var(--body);font-size:21px;line-height:1.3;white-space:pre-wrap;color:var(--ink);overflow:hidden}
+.term .p{color:var(--orange)} .term .ok{color:var(--green)} .term .wn{color:var(--gold)} .term .sec{color:var(--gold)} .term .d{color:var(--dim)}
+.tabs{display:flex;gap:14px;margin:0 0 18px;flex-wrap:wrap}
+.tabs button{font-family:var(--head);font-size:10px}
+
+/* steps */
+.steps{counter-reset:s;display:grid;gap:26px}
+.step{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:18px;align-items:start}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--head);font-size:26px;color:#2a1a0e;background:var(--gold);width:56px;height:56px;display:flex;align-items:center;justify-content:center}
+.step h3{font-family:var(--head);font-size:12px;margin:2px 0 8px;color:var(--peach);line-height:1.5}
+.step p{margin:0}
+pre.code{margin:10px 0 0;padding:12px 14px;background:#0a0f1a;color:var(--peach);font-family:var(--body);font-size:20px;overflow-x:auto;white-space:pre}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:26px;text-align:center}
+.stat{padding:20px 10px}
+.stat b{display:block;font-family:var(--head);font-size:24px;color:var(--orange);margin-bottom:10px}
+.stat span{color:var(--dim)}
+
+footer{border-top:var(--px) solid var(--line);padding:34px 0 60px;color:var(--dim);text-align:center}
+footer .pix{display:inline-block;width:32px;height:32px;margin-bottom:10px}
+
+@media (max-width:760px){
+  .hero .wrap{grid-template-columns:1fr;text-align:left}
+  .sunbox{order:-1} #sun{width:200px;height:200px}
+  .tag{font-size:24px}
+  body{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><canvas id="logo" width="12" height="12"></canvas>SUNSHINE OS</a>
+  <span class="sp"></span>
+  <a class="l" href="#features">FEATURES</a>
+  <a class="l" href="#safety">SAFETY NET</a>
+  <a class="l" href="#install">DOWNLOAD</a>
+  <a class="l" href="https://github.com/tak0dan/SunshineOS">GITHUB</a>
+</div></nav>
+
+<header class="hero" id="top">
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div id="stars" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <h1>ARCH LINUX,<br><span>MADE FRIENDLY.</span></h1>
+      <p class="tag">Boots in 15 seconds, installs itself, and can always go back. <span class="cursor"></span></p>
+      <div class="cta">
+        <a class="btn" href="#install" id="herodl">DOWNLOAD</a>
+        <a class="btn alt" href="#safety">SEE THE SAFETY NET</a>
+      </div>
+    </div>
+    <div class="sunbox"><canvas id="sun" width="64" height="64" role="img" aria-label="A pixel-art sun"></canvas></div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div id="tk"></div></div>
+
+<main>
+<section id="features"><div class="wrap">
+  <h2>WHAT YOU GET</h2>
+  <p class="sub">A real Arch system, set up the way a friend who knows Linux would set it up for you.</p>
+  <div class="grid" id="cards">
+    <article class="card px rv"><canvas data-ic="screen"></canvas><h3>TWO DESKTOPS</h3><p>Start in a calm KDE Plasma live session. The installer adds <b>Hyprland</b> with a full Quickshell desktop, so you can grow into tiling when you want.</p></article>
+    <article class="card px rv"><canvas data-ic="rewind"></canvas><h3>RESTORE POINTS</h3><p>On btrfs, every update is wrapped in snapshots. Something broke? Pick an older state in the boot menu. Like Garuda, with <code>snapper</code> and <code>Btrfs Assistant</code>.</p></article>
+    <article class="card px rv"><canvas data-ic="doctor"></canvas><h3>THE DOCTOR</h3><p><code>sunshine-doctor</code> checks boot files, keyring, disk, services and snapshots, and <code>--fix</code> repairs what is safe to repair.</p></article>
+    <article class="card px rv"><canvas data-ic="id"></canvas><h3>IDENTITY GUARD</h3><p>A plain Arch update would quietly turn the system back into "Arch Linux". A pacman hook keeps it Sunshine OS: <code>sunshine-identity</code>.</p></article>
+    <article class="card px rv"><canvas data-ic="bag"></canvas><h3>SUNSHINE STORE</h3><p>One app for pacman, the AUR and Flatpak. Installed apps are green, sources are colour coded, and it never hides what it is doing.</p></article>
+    <article class="card px rv"><canvas data-ic="disk"></canvas><h3>NO-QUESTIONS INSTALLER</h3><p>A graphical installer (Calamares) and a text one. It retries every package three times, never removes yours, and keeps going.</p></article>
+  </div>
+</div></section>
+
+<section id="safety" style="background:var(--bg2);border-block:var(--px) solid var(--line)"><div class="wrap">
+  <h2>THE SAFETY NET</h2>
+  <p class="sub">Commands that keep the system healthy and recognisably yours. A typical session.</p>
+  <div class="tabs">
+    <button class="btn" data-demo="doctor">sunshine-doctor</button>
+    <button class="btn alt" data-demo="snap">sunshine-snapshot</button>
+    <button class="btn alt" data-demo="id">sunshine-identity</button>
+  </div>
+  <div class="term px hot"><div class="bar"><i></i><i></i><i></i><span id="ttl">user@sunshine:~</span></div><pre id="tpre" aria-live="off"></pre></div>
+</div></section>
+
+<section id="stack"><div class="wrap">
+  <h2>UNDER THE HOOD</h2>
+  <p class="sub">Tested end to end in virtual machines: live boot, graphical and text installs on UEFI and BIOS, btrfs and ext4.</p>
+  <div class="stats">
+    <div class="stat px"><b id="n1">15s</b><span>live boot</span></div>
+    <div class="stat px"><b>113</b><span>desktop packages installed per run</span></div>
+    <div class="stat px"><b>3x</b><span>retries per package, then carry on</span></div>
+    <div class="stat px"><b>2</b><span>desktops: Plasma + Hyprland</span></div>
+  </div>
+</div></section>
+
+<section id="install" style="background:var(--bg2);border-block:var(--px) solid var(--line)"><div class="wrap">
+  <h2>INSTALL</h2>
+  <p class="sub">Three steps. Nothing on your computer changes until you press Install.</p>
+  <div class="steps">
+    <div class="step px rv"><div><h3>DOWNLOAD THE LATEST ISO</h3>
+      <p id="dlinfo">Looking up the newest release...</p>
+      <p><a class="btn" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases/latest">DOWNLOAD LATEST ISO</a></p>
+      <div id="parts" hidden>
+        <p>GitHub limits a single file to 2 GB, so the ISO comes in parts. Download all of them into one folder, then join them:</p>
+        <ul id="partlist"></ul>
+        <pre class="code"># Linux / macOS
+cat sunshineos-*.iso.part* &gt; sunshineos.iso
+sha256sum -c sunshineos-*.iso.sha256
+
+# Windows (cmd)
+copy /b sunshineos-*.iso.part* sunshineos.iso</pre>
+      </div>
+      <p class="d" style="color:var(--dim)">Prefer building it yourself? <span class="inl">git clone https://github.com/tak0dan/SunshineOS &amp;&amp; cd SunshineOS &amp;&amp; ./build.sh</span> (Docker; never touches your system).</p></div></div>
+    <div class="step px rv"><div><h3>WRITE IT TO A USB STICK</h3><p>Any tool works; with <span class="inl">dd</span>:</p><pre class="code">sudo dd if=sunshineos.iso of=/dev/sdX bs=4M status=progress oflag=sync</pre><p>Or just copy the ISO onto a <a href="https://www.ventoy.net">Ventoy</a> stick.</p></div></div>
+    <div class="step px rv"><div><h3>BOOT, THEN CLICK "INSTALL SUNSHINE OS"</h3><p>The Welcome window opens by itself. Pick btrfs to get restore points. Keep internet connected: the Hyprland desktop is fetched during the install.</p></div></div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <canvas class="pix" id="fsun" width="12" height="12"></canvas><br>
+  Made with sunshine. Built on <a href="https://archlinux.org">Arch Linux</a>, KDE Plasma, Hyprland and
+  <a href="https://github.com/end-4/dots-hyprland">end-4's dots</a>.
+</div></footer>
+
+<script>
+(function(){
+"use strict";
+var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+var C = {_:null, o:"#ff9654", y:"#ffc43d", p:"#ffcba0", r:"#ff8f7a", g:"#8fd16a", k:"#0e1422", w:"#fdf0dc", b:"#3a4a72", d:"#7a3b12"};
+
+/* draw a tiny bitmap (array of strings) on a canvas, 1 char = 1 pixel */
+function bmp(cv, rows){
+  cv.width = rows[0].length; cv.height = rows.length; var x = cv.getContext("2d");
+  rows.forEach(function(r,y){ for (var i=0;i<r.length;i++){ var c=C[r[i]]; if(c){ x.fillStyle=c; x.fillRect(i,y,1,1);} } });
+}
+var ICONS = {
+ screen:["............","............",".wwwwwwwwww.",".wbbbbbbbbw.",".wbboobbbbw.",".wbbooybbbw.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wwwwwwwwww.","....wwww....","...wwwwww...","............"],
+ rewind:["............","....o....o..","...oo...oo..","..ooo..ooo..",".oooo.oooo..","oooooooooo..",".oooo.oooo..","..ooo..ooo..","...oo...oo..","....o....o..","............","............"],
+ doctor:["............","....yyyy....","....yppy....","....yppy....",".yyyyppyyyy.",".yppppppppy.",".yppppppppy.",".yyyyppyyyy.","....yppy....","....yppy....","....yyyy....","............"],
+ id:["............","..oooooooo..",".oyyyyyyyyo.",".oy.yyyy.yo.",".oy.yyyy.yo.",".oyyyyyyyyo.",".oy.wwww.yo.",".oy......yo.",".oyyyyyyyyo.","..oooooooo..","............","............"],
+ bag:["............","....wwww....","...w....w...","...w....w...","..oooooooo..","..oyyyyyyo..","..oyyppyyo..","..oyyppyyo..","..oyyyyyyo..","..oooooooo..","............","............"],
+ disk:["............",".wwwwwwwwww.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wbbbbbbbbw.",".wwwwwwwwww.",".wkkkkkkkkw.",".wkkkgkkkkw.",".wwwwwwwwww.","............","............"]
+};
+document.querySelectorAll("canvas[data-ic]").forEach(function(cv){ bmp(cv, ICONS[cv.dataset.ic]); });
+
+/* small logo: a pixel sun */
+var LOGO=["....o..o....","...o.oo.o...","....yyyy....",".o.yyyyyy.o.","..yyppppyy..","oyyyppppyyyo","oyyyppppyyyo","..yyppppyy..",".o.yyyyyy.o.","....yyyy....","...o.oo.o...","....o..o...."];
+bmp(document.getElementById("logo"), LOGO); bmp(document.getElementById("fsun"), LOGO);
+
+/* big sun: 64x64, two ray frames, banded shading, gentle bob */
+var sun=document.getElementById("sun"), sx=sun.getContext("2d"), t=0;
+function drawSun(f){
+  sx.clearRect(0,0,64,64); var cx=32, cy=32+(f%2?0:1);
+  var ray = function(dx,dy,len,col){ for(var i=17;i<17+len;i++){ sx.fillStyle=col; sx.fillRect(cx+dx*i-1,cy+dy*i-1,3,3); } };
+  var long_=(f%2)?7:4, short_=(f%2)?4:7;
+  [[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){ ray(d[0],d[1],long_,C.o); });
+  [[1,1],[-1,1],[1,-1],[-1,-1]].forEach(function(d){ var s=0.72; for(var i=12;i<12+short_;i++){ sx.fillStyle=C.o; sx.fillRect(Math.round(cx+d[0]*i*s*1.0)-1, Math.round(cy+d[1]*i*s*1.0)-1,3,3);} });
+  for(var y=-15;y<=15;y++)for(var x=-15;x<=15;x++){
+    var d2=x*x+y*y; if(d2>15*15) continue;
+    var band = (y+15)/30;                    // top light -> bottom deeper
+    var col = band<.25?C.p : band<.55?C.y : band<.8?C.o : C.r;
+    if(((x+y)&1)===0 && Math.abs(band%.25-.0)<.04) col = (col===C.p?C.y:col===C.y?C.o:col===C.o?C.r:C.o); // dither between bands
+    if(d2>13*13) col=C.d;                    // outline
+    sx.fillStyle=col; sx.fillRect(cx+x,cy+y,1,1);
+  }
+  sx.fillStyle=C.k; sx.fillRect(cx-6,cy-3,3,3); sx.fillRect(cx+4,cy-3,3,3);               // eyes
+  sx.fillRect(cx-5,cy+5,1,1); sx.fillRect(cx-4,cy+6,1,1); sx.fillRect(cx-3,cy+7,8,1); sx.fillRect(cx+5,cy+6,1,1); sx.fillRect(cx+6,cy+5,1,1); // smile
+  sx.fillStyle=C.r; sx.fillRect(cx-9,cy+3,3,2); sx.fillRect(cx+7,cy+3,3,2);                 // cheeks
+}
+drawSun(0);
+if(!reduce) setInterval(function(){ drawSun(++t); }, 500);
+
+/* hero background: the real wallpaper, shrunk to a chunky pixel grid */
+var bg=document.getElementById("bg"), bx=bg.getContext("2d"), im=new Image();
+im.onload=function(){ bg.width=224; bg.height=126; bx.imageSmoothingEnabled=true; bx.drawImage(im,0,0,224,126);
+  var d=bx.getImageData(0,0,224,126), p=d.data, lv=6;                                    // posterise: fewer colours
+  for(var i=0;i<p.length;i+=4){ for(var k=0;k<3;k++){ p[i+k]=Math.round(p[i+k]/255*lv)/lv*255; } } bx.putImageData(d,0,0); };
+im.src="assets/flower.jpg";
+
+/* stars + clouds */
+var st=document.getElementById("stars"), hero=document.querySelector(".hero");
+for(var i=0;i<70;i++){ var s=document.createElement("i"); s.className="star";
+  s.style.left=(Math.random()*100).toFixed(1)+"%"; s.style.top=(Math.random()*100).toFixed(1)+"%";
+  s.style.animationDelay=(Math.random()*1.6).toFixed(2)+"s"; s.style.animationDuration=(1+Math.random()*1.6).toFixed(2)+"s";
+  if(Math.random()<.2){ s.style.background=C.y; } st.appendChild(s); }
+var CLOUD=[".....wwww.......","...wwwwwwww.....","..wwwwwwwwww.ww.","wwwwwwwwwwwwwwww","wwwwwwwwwwwwwwww"];
+for(var c=0;c<3;c++){ var cv=document.createElement("canvas"); cv.className="cloud"; bmp(cv,CLOUD);
+  cv.style.width=(64+c*24)+"px"; cv.style.height="auto"; cv.style.top=(8+c*24)+"%";
+  cv.style.animationDuration=(60+c*25)+"s"; cv.style.animationDelay=(-c*20)+"s"; hero.appendChild(cv); }
+
+/* ticker */
+var words=["ARCH BASED","PLASMA","HYPRLAND","BTRFS SNAPSHOTS","GRUB SNAPSHOT MENU","SUNSHINE STORE","FLATHUB","AUR","ZEN BROWSER","FISH SHELL","ORANGE EVERYTHING"];
+document.getElementById("tk").textContent=words.concat(words).join("   ☀   ");
+
+/* scroll reveal, stepped */
+var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }); },{threshold:.15});
+document.querySelectorAll(".rv").forEach(function(el,i){ el.style.animationDelay=((i%3)*.08)+"s"; io.observe(el); });
+
+/* terminal demos */
+var DEMOS={
+ doctor:{title:"user@sunshine:~", lines:[
+  ["p","$ sunshine-doctor"],["d","Sunshine OS doctor  (check only; add --fix to repair)"],[""],
+  ["sec","☀ Identity"],["ok","  ✔ this is Sunshine OS (Sunshine OS)"],[""],
+  ["sec","☀ Package manager"],["ok","  ✔ no lock file"],["ok","  ✔ package keyring present"],["ok","  ✔ package database consistent"],[""],
+  ["sec","☀ Boot"],["ok","  ✔ kernel image present"],["ok","  ✔ kernel image fully allocated (GRUB can read it)"],["ok","  ✔ GRUB menu present"],[""],
+  ["sec","☀ Restore points"],["ok","  ✔ snapper configured for /"],["ok","  ✔ automatic snapshot before/after every update (snap-pac)"],["ok","  ✔ snapshots appear in the GRUB menu"],[""],
+  ["ok","All good"]]},
+ snap:{title:"user@sunshine:~", lines:[
+  ["p","$ sunshine-snapshot create \"before trying something risky\""],["ok","Restore point created."],[""],
+  ["p","$ sudo pacman -Syu"],["d",":: Running pre-transaction hooks..."],["d","[snap-pac] pre  snapshot #7"],["d","... upgrading packages ..."],["d","[snap-pac] post snapshot #8"],[""],
+  ["p","$ sunshine-snapshot list"],
+  ["","  # | Type   | Description"],["","  1 | single | Fresh install"],["","  6 | single | before trying something risky"],["","  7 | pre    | pacman -Syu"],["","  8 | post   | pacman -Syu"],[""],
+  ["wn","Something broke? Reboot, pick \"Sunshine OS snapshots\" in the menu,"],["wn","then restore from Btrfs Assistant."]]},
+ id:{title:"user@sunshine:~", lines:[
+  ["p","$ sudo pacman -Syu"],["d","... filesystem 2026.11-1 -> 2026.12-1 ..."],["d","(2/9) Keeping the Sunshine OS identity..."],[""],
+  ["p","$ sunshine-identity check"],["ok","Identity OK: Sunshine OS"],[""],
+  ["p","$ cat /etc/os-release | head -3"],["","NAME=\"Sunshine OS\""],["","PRETTY_NAME=\"Sunshine OS\""],["","ID=sunshineos"],[""],
+  ["d","Without the hook, that update would have turned this back into plain \"Arch Linux\"."]]}
+};
+var pre=document.getElementById("tpre"), ttl=document.getElementById("ttl"), run=0;
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function play(name){
+  var d=DEMOS[name], my=++run; ttl.textContent=d.title; pre.innerHTML="";
+  var i=0;
+  (function next(){
+    if(my!==run||i>=d.lines.length) return;
+    var L=d.lines[i++], cls=L[0], txt=L[1]||"", span=document.createElement("span"); if(cls) span.className=cls; pre.appendChild(span);
+    if(cls==="p" && !reduce){ var k=0; (function ty(){ if(my!==run) return; span.textContent=txt.slice(0,++k); if(k<txt.length) setTimeout(ty,28); else { pre.appendChild(document.createTextNode("\n")); setTimeout(next,350);} })(); }
+    else { span.innerHTML=esc(txt); pre.appendChild(document.createTextNode("\n")); setTimeout(next, reduce?0:120); }
+  })();
+}
+document.querySelectorAll("[data-demo]").forEach(function(b){ b.addEventListener("click",function(){
+  document.querySelectorAll("[data-demo]").forEach(function(o){ o.classList.add("alt"); }); b.classList.remove("alt"); play(b.dataset.demo); }); });
+var started=false, tio=new IntersectionObserver(function(es){ if(es[0].isIntersecting&&!started){ started=true; play("doctor"); } },{threshold:.3});
+tio.observe(document.querySelector(".term"));
+})();
+
+/* latest release from GitHub: always points at the newest ISO, whatever its version */
+(function(){
+  var info=document.getElementById("dlinfo"), btn=document.getElementById("dlbtn"), box=document.getElementById("parts"), list=document.getElementById("partlist");
+  function mb(n){ return n>1e9 ? (n/1e9).toFixed(2)+" GB" : Math.round(n/1e6)+" MB"; }
+  fetch("https://api.github.com/repos/tak0dan/SunshineOS/releases/latest",{headers:{Accept:"application/vnd.github+json"}})
+   .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+   .then(function(rel){
+     var as=(rel.assets||[]), isos=as.filter(function(a){return /\.iso$/.test(a.name);}),
+         parts=as.filter(function(a){return /\.iso\.part/.test(a.name);}).sort(function(a,b){return a.name<b.name?-1:1;}),
+         sum=as.filter(function(a){return /\.sha256$/.test(a.name);});
+     var d=new Date(rel.published_at).toISOString().slice(0,10);
+     if(isos.length){ btn.href=isos[0].browser_download_url; btn.textContent="DOWNLOAD ISO ("+mb(isos[0].size)+")";
+       info.textContent="Latest: "+rel.name+" ("+d+"). Verify with the .sha256 file on the release page."; }
+     else if(parts.length){
+       var tot=parts.reduce(function(n,a){return n+a.size;},0);
+       info.textContent="Latest: "+rel.name+" ("+d+"), "+mb(tot)+" in "+parts.length+" parts.";
+       btn.textContent="DOWNLOAD PART 1 OF "+parts.length; btn.href=parts[0].browser_download_url; box.hidden=false;
+       parts.concat(sum).forEach(function(a){ var li=document.createElement("li"), l=document.createElement("a"); l.href=a.browser_download_url; l.textContent=a.name; li.appendChild(l); li.appendChild(document.createTextNode(" ("+mb(a.size)+")")); list.appendChild(li); });
+     } else { info.textContent="Latest release: "+rel.name+" ("+d+"). Open the release page for the files."; btn.href=rel.html_url; }
+     document.getElementById("herodl").href="#install";
+   }).catch(function(){ info.textContent="No release found yet. Check the releases page, or build it yourself below."; });
+})();
+</script>
+</body>
+</html>
