@@ -112,7 +112,9 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
 .stage{--c:calc(var(--S) / 64)}
 #halo{position:absolute;left:calc(var(--c) * -20);top:calc(var(--c) * -20);width:calc(var(--c) * 104);height:calc(var(--c) * 76);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
 /* the animated logo: 64 x 64 cells, 12 / 8 / 5 px per cell */
-#logo{position:absolute;left:0;top:0;width:var(--S);height:var(--S);image-rendering:pixelated;image-rendering:crisp-edges}
+#logo{position:absolute;left:0;top:0;width:var(--S);height:calc(var(--S) * 76 / 64);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
+/* the line under the sun reaches below the stage: keep the usual gap before the paragraph */
+.stage{margin-bottom:calc(var(--c) * 9 - 36px)}
 /* the cut-out strip: base state is the finished look; with JS the strip is hidden until the build-up has finished */
 .band{position:absolute;left:0;right:0;top:calc(50% - var(--G) / 2);height:var(--G);background:color-mix(in srgb,var(--field-bg) 94%,transparent)}
 .edge{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand) 14%,var(--brand) 86%,transparent);opacity:.7}
@@ -325,7 +327,7 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
   <canvas id="px" aria-hidden="true"></canvas>
   <div class="col">
     <a class="pill" id="relpill" href="#releases" hidden><span id="relpilltext"></span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
-    <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="64"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
+    <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="76"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
     <h1 class="sr-only">Sunshine OS</h1>
     <p class="d">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
@@ -655,7 +657,7 @@ Field($("#px"),hero,{intro:true,interactive:true});
 /* animated logo: build-up once, then the 10 s idle loop (assets/logo-anim); the strip is cut out of it after the build-up */
 (function(){
   var stage=$("#stage"), cv=$("#logo"), ctx=cv.getContext("2d");
-  var CROP={x:9,y:3}, N=64, MID=32, BAND=10, CUT_AT=4.7, CUT_DUR=1.1, base="assets/logo-anim/";
+  var CROP={x:9,y:3}, N=64, NH=76, MID=32, BAND=10, CUT_AT=4.7, CUT_DUR=1.1, base="assets/logo-anim/";
   ctx.imageSmoothingEnabled=false;
   function img(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src})}
   function ease(x){x=Math.min(1,Math.max(0,x));return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
@@ -666,8 +668,8 @@ Field($("#px"),hero,{intro:true,interactive:true});
     return Promise.all([img(base+m.intro.file),img(base+m.loop.file)]).then(function(im){
       var fw=m.frame_w,fh=m.frame_h,cols=m.cols,fps=m.fps,introDur=m.intro.frames/fps,last="",vis=true,start=0;
       function draw(sheet,i,t){
-        ctx.clearRect(0,0,N,N);
-        ctx.drawImage(sheet,(i%cols)*fw+CROP.x,Math.floor(i/cols)*fh+CROP.y,N,N,0,0,N,N);
+        ctx.clearRect(0,0,N,NH);
+        ctx.drawImage(sheet,(i%cols)*fw+CROP.x,Math.floor(i/cols)*fh+CROP.y,N,NH,0,0,N,NH);
         cut(cutRows(t));
       }
       if(reduce){stage.classList.remove("js");draw(im[0],m.intro.frames-1,99);return}
