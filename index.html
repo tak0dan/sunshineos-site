@@ -682,12 +682,13 @@ Field($("#px"),hero,{intro:true,interactive:true});
     }
     sctx.putImageData(d,0,0);
   }
-  function img(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src})}
+  var V="?v=20261113c"; /* bump to force every browser to re-fetch the logo sheets */
+  function img(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src+(src.indexOf("logo-pixel")<0?V:"")})}
   function ease(x){x=Math.min(1,Math.max(0,x));return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
   function cutRows(t){return reduce?BAND:Math.round(BAND*ease((t-CUT_AT)/CUT_DUR))}
   function fallback(){img("assets/logo-pixel.png").then(function(i){ctx.drawImage(i,0,0,N,N);cut(BAND);stage.classList.add("lines");setTimeout(function(){stage.classList.add("cut")},500)})}
   function cut(rows){if(rows>0){var y0=Math.floor(MID-rows/2);ctx.clearRect(0,y0,N,rows)}}
-  fetch(base+"sprite-lite.json").then(function(r){return r.json()}).then(function(m){
+  fetch(base+"sprite-lite.json"+V).then(function(r){return r.json()}).then(function(m){
     return Promise.all([img(base+m.intro.file),img(base+m.loop.file),loadLow()]).then(function(im){
       var fw=m.frame_w,fh=m.frame_h,cols=m.cols,fps=m.fps,introDur=m.intro.frames/fps,last="",vis=true,start=0;
       function draw(sheet,i,t){
