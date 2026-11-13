@@ -115,7 +115,7 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
 #logo{position:absolute;left:0;top:0;width:var(--S);height:calc(var(--S) * 76 / 64);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
 /* the line under the sun reaches below the stage: keep a clear gap (28px) between the end of the line and the paragraph */
 .stage{margin-bottom:calc(var(--c) * 9 - 8px)}
-#spikes{position:absolute;left:calc(var(--c) * 15);top:calc(var(--c) * 57);width:calc(var(--c) * 33);height:calc(var(--c) * 18);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
+#spikes{position:absolute;left:calc(var(--c) * 15);top:calc(var(--c) * 56.2);width:calc(var(--c) * 33.0667);height:calc(var(--c) * 17.8667);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
 /* the cut-out strip: base state is the finished look; with JS the strip is hidden until the build-up has finished */
 .band{position:absolute;left:0;right:0;top:calc(50% - var(--G) / 2);height:var(--G);background:color-mix(in srgb,var(--field-bg) 94%,transparent)}
 .edge{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand) 14%,var(--brand) 86%,transparent);opacity:.7}
@@ -328,7 +328,7 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
   <canvas id="px" aria-hidden="true"></canvas>
   <div class="col">
     <a class="pill" id="relpill" href="#releases" hidden><span id="relpilltext"></span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
-    <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="76"></canvas><canvas id="spikes" width="132" height="72" aria-hidden="true"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
+    <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="76"></canvas><canvas id="spikes" width="124" height="67" aria-hidden="true"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
     <h1 class="sr-only">Sunshine OS</h1>
     <p class="d">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
@@ -651,27 +651,35 @@ Field($("#px"),hero,{intro:true,interactive:true});
   var stage=$("#stage"), cv=$("#logo"), ctx=cv.getContext("2d");
   var CROP={x:9,y:3}, N=64, NH=76, MID=32, BAND=10, CUT_AT=4.7, CUT_DUR=1.1, base="assets/logo-anim/";
   ctx.imageSmoothingEnabled=false;
-  /* the spikes under the sun are finer than the sprite grid, so they are drawn here on a 4x finer canvas (traced from the hand-drawn mock) */
-  var sk=$("#spikes"), sctx=sk.getContext("2d"), SK=[[0,31.47,61.07,30.67,61.07,0.58],[1,34.4,61.87,33.6,61.07,0.91],[1,45.87,62.93,48.0,61.33,0.69],[0,52.0,62.4,52.53,62.67,0.96],[2,34.67,63.73,32.0,65.6,1.22],[1,46.67,63.47,49.87,65.07,1.4],[1,29.87,63.73,28.8,64.27,0.67],[3,37.33,64.27,36.53,64.27,0.58],[2,44.27,64.27,44.27,64.8,0.64],[2,36.0,65.07,34.67,69.33,1.4],[3,37.87,65.33,37.87,65.87,0.64],[3,42.93,65.33,43.2,65.6,0.91],[2,44.27,65.87,46.93,68.53,1.4],[3,39.2,65.87,38.67,65.87,0.64],[1,48.27,66.4,49.6,67.47,0.67],[2,33.07,66.93,32.27,68.27,0.66],[3,38.4,67.47,38.4,69.07,0.93],[3,43.2,67.47,44.0,69.07,0.83]], SKX=24, SKY=60, SKS=4, SKST=[[4,5],[8,5],[11,5],[14,5]];
-  function skT(intro,i){
-    if(intro){if(i<144)return -1;return i<170?i-144:99}
-    if(i<46)return 99; if(i<60)return 25-(i-46)*(22/13); if(i<164)return -1; return i<190?i-164:99;
+  /* the lower half of the sun is the hand-drawn mock itself: sunlow.png holds its pixels, sunlow-meta.png says which part (disc / spike / line) each pixel is and in what order it grows */
+  var sk=$("#spikes"), sctx=sk.getContext("2d"), LOW=null, SKST=[[4,5],[8,5],[11,5],[14,5]];
+  function loadLow(){
+    return Promise.all([img(base+"sunlow.png"),img(base+"sunlow-meta.png")]).then(function(a){
+      var w=a[0].width,h=a[0].height,c=document.createElement("canvas");c.width=w;c.height=h;var x=c.getContext("2d");
+      x.drawImage(a[0],0,0);var col=x.getImageData(0,0,w,h).data;x.clearRect(0,0,w,h);x.drawImage(a[1],0,0);
+      LOW={w:w,h:h,col:col,meta:x.getImageData(0,0,w,h).data};
+    }).catch(function(){LOW=null});
+  }
+  function skState(intro,i){   /* phi: disc fill angle (deg, 99 = whole), t2: spike/line clock (-1 none, 99 all), dis: dissolve 0..1 */
+    function sweep(f){return 8+86*(function(x){x=Math.min(1,Math.max(0,x));return x*x*(3-2*x)})(f/15)}
+    if(intro){
+      if(i<128)return{phi:-1,t2:-1,dis:0}; if(i<144)return{phi:sweep(i-128),t2:-1,dis:0}; if(i<170)return{phi:99,t2:i-144,dis:0}; return{phi:99,t2:99,dis:0};
+    }
+    if(i<46)return{phi:99,t2:99,dis:0}; if(i<60)return{phi:99,t2:25-(i-46)*(22/13),dis:0};
+    if(i<81)return{phi:99,t2:-1,dis:(i-59)/22}; if(i<148)return{phi:-1,t2:-1,dis:0};
+    if(i<164)return{phi:sweep(i-148),t2:-1,dis:0}; if(i<190)return{phi:99,t2:i-164,dis:0}; return{phi:99,t2:99,dis:0};
   }
   function drawSpikes(intro,i){
-    var t=skT(intro,i), d=sctx.createImageData(sk.width,sk.height), px=d.data;
-    if(t>=0)SK.forEach(function(s){
-      var st=SKST[s[0]], p=t>=99?1:Math.min(1,Math.max(0,(t-st[0]+1)/st[1])); p=1-Math.pow(1-p,2); if(p<=0)return;
-      var bx=s[1],by=s[2],L=Math.hypot(s[3]-bx,s[4]-by), n=Math.max(2,Math.ceil(L*SKS*3));
-      for(var k=0;k<=n;k++){
-        var f=k/n; if(f>p+1e-9)break;
-        var x=(bx+(s[3]-bx)*f-SKX)*SKS, y=(by+(s[4]-by)*f-SKY)*SKS, r=Math.max(.55,s[5]*(1-f)*SKS/2+.25);
-        for(var yy=Math.floor(y-r);yy<=Math.ceil(y+r);yy++)for(var xx=Math.floor(x-r);xx<=Math.ceil(x+r);xx++){
-          if(xx<0||yy<0||xx>=sk.width||yy>=sk.height)continue;
-          if(Math.hypot(xx+.5-x,yy+.5-y)>r)continue;
-          var o=(yy*sk.width+xx)*4; px[o]=f<.35?236:222; px[o+1]=f<.35?128:108; px[o+2]=24; px[o+3]=255;
-        }
-      }
-    });
+    if(!LOW){sctx.clearRect(0,0,sk.width,sk.height);return}
+    var S=skState(intro,i), d=sctx.createImageData(LOW.w,LOW.h), o=d.data, m=LOW.meta, c=LOW.col, n=LOW.w*LOW.h;
+    function prog(st,du){var p=S.t2>=99?1:Math.min(1,Math.max(0,(S.t2-st+1)/du));return 1-(1-p)*(1-p)}
+    var P=[0,0,prog(4,5),prog(8,5),prog(11,5),prog(14,5),prog(16,10)];
+    for(var q=0;q<n;q++){
+      var k=q*4; if(!m[k+3])continue; var g=m[k], key=m[k+1]/255, on=false;
+      if(g===1){on=S.phi>=0&&key*90<=S.phi; if(on&&S.dis>0){var x=q%LOW.w,y=(q/LOW.w)|0,h=(((x*73856093)^(y*19349663))>>>0)%1000/1000;on=h>S.dis}}
+      else if(S.t2>=0&&P[g]>0)on=key<=P[g]+1e-6;
+      if(on){o[k]=c[k];o[k+1]=c[k+1];o[k+2]=c[k+2];o[k+3]=255}
+    }
     sctx.putImageData(d,0,0);
   }
   function img(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src})}
@@ -680,7 +688,7 @@ Field($("#px"),hero,{intro:true,interactive:true});
   function fallback(){img("assets/logo-pixel.png").then(function(i){ctx.drawImage(i,0,0,N,N);cut(BAND);stage.classList.add("lines");setTimeout(function(){stage.classList.add("cut")},500)})}
   function cut(rows){if(rows>0){var y0=Math.floor(MID-rows/2);ctx.clearRect(0,y0,N,rows)}}
   fetch(base+"sprite-lite.json").then(function(r){return r.json()}).then(function(m){
-    return Promise.all([img(base+m.intro.file),img(base+m.loop.file)]).then(function(im){
+    return Promise.all([img(base+m.intro.file),img(base+m.loop.file),loadLow()]).then(function(im){
       var fw=m.frame_w,fh=m.frame_h,cols=m.cols,fps=m.fps,introDur=m.intro.frames/fps,last="",vis=true,start=0;
       function draw(sheet,i,t){
         ctx.clearRect(0,0,N,NH);
