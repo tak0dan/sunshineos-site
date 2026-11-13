@@ -378,7 +378,7 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
           <p class="d" id="dlinfo">Looking up the newest release&hellip;</p>
           <p class="m">UEFI and BIOS systems, installable on btrfs or ext4.</p></div>
         <div class="dl">
-          <a class="btn primary" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg><span id="dlbtntext">Sunshine OS (x86_64)</span></a>
+          <a class="btn primary" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg><span id="dlbtntext">Checking the latest ISO&hellip;</span></a>
           <span class="sm" id="dlsm"></span>
         </div>
       </div>
@@ -781,7 +781,11 @@ fetch("release.json",{cache:"no-cache"})
   $("#releases").hidden=false;$$(".rl").forEach(function(a){a.hidden=false});
   var lab="Sunshine OS "+top.version;$("#relpilltext").textContent=lab+" is available";$("#relpill").hidden=false;
   $("#dlinfo").textContent="Latest ISO: "+lab+", published "+fd(top.date)+".";
-  $("#dlbtntext").textContent=lab+" (x86_64) · "+mb(top.size);
+  /* everything on the button comes from release.json: version from the entry, architecture from the entry or the file name, size from the real parts */
+  var am=/(x86_64|aarch64|arm64|i686)/i.exec(top.arch||top.file||""),arch=am?am[1]:"x86_64";
+  var sz=(top.parts&&top.parts.length)?top.parts.reduce(function(a,p){return a+(p.size||0)},0):top.size;
+  top.size=sz||top.size;
+  $("#dlbtntext").textContent=lab+" ("+arch+") · "+mb(top.size);
   /* the USB command uses the real file name from release.json; replace sdX with your USB stick */
   $("#ddcmd").textContent="cd ~/Downloads\nsudo dd if="+top.file+" of=/dev/sdX bs=4M status=progress oflag=sync";
   $("#dlsm").innerHTML='<a href="'+esc(RELS+top.tag)+'">All files</a><span title="'+esc(top.sha256)+'">SHA-256 '+esc(top.sha256.slice(0,12))+'&hellip;</span>';
