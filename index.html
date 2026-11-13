@@ -385,7 +385,8 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
       <div class="row">
         <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.75" y="3.75" width="16.5" height="12" stroke="currentColor" stroke-width="1.5"/><path d="M8 20.25H16M12 15.75V20.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Write it to a USB stick</h4>
           <p class="d">Any tool works. On Linux, with <code>dd</code>:</p></div>
-        <div><pre class="code">sudo dd if=sunshineos.iso of=/dev/sdX bs=4M status=progress oflag=sync</pre></div>
+        <div><pre class="code" id="ddcmd">cd ~/Downloads
+sudo dd if=SunshineOS_&lt;version&gt;_Release_&lt;date&gt;.iso of=/dev/sdX bs=4M status=progress oflag=sync</pre></div>
       </div>
       <div class="row">
         <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 22V2L22 12L5 22Z" fill="currentColor"/></svg>Boot and install</h4>
@@ -781,6 +782,8 @@ fetch("release.json",{cache:"no-cache"})
   var lab="Sunshine OS "+top.version;$("#relpilltext").textContent=lab+" is available";$("#relpill").hidden=false;
   $("#dlinfo").textContent="Latest ISO: "+lab+", published "+fd(top.date)+".";
   $("#dlbtntext").textContent=lab+" (x86_64) · "+mb(top.size);
+  /* the USB command uses the real file name from release.json; replace sdX with your USB stick */
+  $("#ddcmd").textContent="cd ~/Downloads\nsudo dd if="+top.file+" of=/dev/sdX bs=4M status=progress oflag=sync";
   $("#dlsm").innerHTML='<a href="'+esc(RELS+top.tag)+'">All files</a><span title="'+esc(top.sha256)+'">SHA-256 '+esc(top.sha256.slice(0,12))+'&hellip;</span>';
   var ul=$("#newslist");ul.innerHTML="";
   rs.slice(0,6).forEach(function(r){

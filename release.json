@@ -1,20 +1,20 @@
 {
   "releases": [
     {
-      "version": "1.0",
+      "version": "1.3",
       "date": "2026-11-12",
-      "tag": "v1.0-2026-11-12",
-      "file": "SunshineOS_1.0_Release_2026-11-12.iso",
+      "tag": "v1.3-2026-11-12",
+      "file": "SunshineOS_1.3_Release_2026-11-12.iso",
       "size": 2866184192,
       "sha256": "158253a72b0ba7e56507c0e5f3a4a6639321ae5aa6641e29bb9d23dce9f355b1",
-      "url": "https://sunshineos-download.tmtroshko.workers.dev/",
+      "url": "https://sunshineos-download.sunshineos.workers.dev/",
       "parts": [
         {
-          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v1.0-2026-11-12/SunshineOS_1.0_Release_2026-11-12.iso.part1",
+          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v1.3-2026-11-12/SunshineOS_1.3_Release_2026-11-12.iso.part1",
           "size": 1992294400
         },
         {
-          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v1.0-2026-11-12/SunshineOS_1.0_Release_2026-11-12.iso.part2",
+          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v1.3-2026-11-12/SunshineOS_1.3_Release_2026-11-12.iso.part2",
           "size": 873889792
         }
       ]
