@@ -373,17 +373,8 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
           <p class="d" id="dlinfo">Looking up the newest release&hellip;</p>
           <p class="m">UEFI and BIOS systems, installable on btrfs or ext4.</p></div>
         <div class="dl">
-          <a class="btn primary" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases/latest"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg><span id="dlbtntext">Sunshine OS (x86_64)</span></a>
+          <a class="btn primary" id="dlbtn" href="https://sourceforge.net/projects/sunshinelinux/files/"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg><span id="dlbtntext">Sunshine OS (x86_64)</span></a>
           <span class="sm" id="dlsm"></span>
-          <div id="parts" hidden>
-            <p>GitHub limits a single file to 2 GB, so the ISO comes in parts. Download all of them into one folder, then join them:</p>
-            <ul id="partlist"></ul>
-            <pre class="code"># Linux / macOS
-cat sunshineos-*.iso.part* &gt; sunshineos.iso
-sha256sum -c sunshineos-*.iso.sha256
-# Windows (cmd)
-copy /b sunshineos-*.iso.part* sunshineos.iso</pre>
-          </div>
         </div>
       </div>
       <div class="row">
@@ -490,8 +481,8 @@ cd SunshineOS
 
 <section class="sec" id="releases" hidden>
   <div class="inner">
-    <div class="head"><div class="t"><h2 class="h"><a href="#releases">Releases</a></h2><p class="sub">Published on GitHub. The newest ISO is what the download button above points to.</p></div>
-      <div class="more"><a class="tl" href="https://github.com/tak0dan/SunshineOS/releases">All releases<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a></div></div>
+    <div class="head"><div class="t"><h2 class="h"><a href="#releases">Releases</a></h2><p class="sub">Published on SourceForge. The newest ISO is what the download button above points to.</p></div>
+      <div class="more"><a class="tl" href="https://sourceforge.net/projects/sunshinelinux/files/">All releases<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a></div></div>
     <ul class="news" id="newslist"><li style="padding:20px 0;color:var(--text-secondary);font-size:14px">Looking up releases&hellip;</li></ul>
   </div>
 </section>
@@ -508,7 +499,7 @@ cd SunshineOS
       </div>
       <div class="fcols">
         <nav aria-label="Explore"><h2>Explore</h2><ul><li><a class="fl" href="#features">Features</a></li><li><a class="fl" href="#tools">Tools</a></li><li><a class="fl" href="#themes">Themes</a></li><li><a class="fl" href="#install">Install</a></li></ul></nav>
-        <nav aria-label="Project"><h2>Project</h2><ul><li><a class="fl" href="https://github.com/tak0dan/SunshineOS">Repository</a></li><li><a class="fl" href="https://github.com/tak0dan/SunshineOS/releases">Releases</a></li><li><a class="fl" href="https://github.com/tak0dan/SunshineOS/issues">Issues</a></li></ul></nav>
+        <nav aria-label="Project"><h2>Project</h2><ul><li><a class="fl" href="https://github.com/tak0dan/SunshineOS">Repository</a></li><li><a class="fl" href="https://sourceforge.net/projects/sunshinelinux/files/">Releases</a></li><li><a class="fl" href="https://github.com/tak0dan/SunshineOS/issues">Issues</a></li></ul></nav>
       </div>
     </div>
     <div class="bot"><p>Sunshine OS.</p><p>Built on <a class="ln" href="https://archlinux.org">Arch Linux</a>, KDE Plasma, Hyprland and <a class="ln" href="https://github.com/end-4/dots-hyprland">end-4's dots</a>.</p></div>
@@ -760,48 +751,43 @@ Field($("#px"),hero,{intro:true,interactive:true});
 })();
 Field($("#fpx"),$("footer"),{up:true});
 
-/* releases from GitHub */
-var REPO="tak0dan/SunshineOS";
+/* Releases and the ISO download. The ISO is one file hosted on SourceForge (GitHub caps release files at 2 GB). release.json, next to
+   this page, lists the releases (tools/release-sourceforge.sh in the Sunshine OS repo adds an entry on every publish).
+   A click on the button starts the download from this page through a hidden frame; SourceForge answers with
+   "Content-Disposition: attachment", so the browser saves the file and the visitor never leaves the site. */
+var FILES="https://sourceforge.net/projects/sunshinelinux/files/";
 function mb(n){return n>1e9?(n/1e9).toFixed(2)+" GB":Math.round(n/1e6)+" MB"}
 function fd(s){try{return new Date(s).toLocaleDateString("en",{year:"numeric",month:"long",day:"numeric"})}catch(e){return s}}
-fetch("https://api.github.com/repos/"+REPO+"/releases?per_page=12",{headers:{Accept:"application/vnd.github+json"}})
+var isoUrl="",btn=$("#dlbtn");
+btn.addEventListener("click",function(e){
+  e.preventDefault();
+  if(!isoUrl){$("#dlsm").textContent="No ISO has been published yet.";return}
+  var f=document.createElement("iframe");f.hidden=true;f.setAttribute("aria-hidden","true");f.src=isoUrl;document.body.appendChild(f);
+  setTimeout(function(){f.remove()},300000);
+  $("#dlsm").textContent="Your download has started. Look in your browser's downloads.";
+});
+fetch("release.json",{cache:"no-cache"})
 .then(function(r){if(!r.ok)throw 0;return r.json()})
-.then(function(rs){
-  rs=rs.filter(function(r){return !r.draft});
+.then(function(d){
+  /* the newest file named SunshineOS_<version>_Release_<date>.iso wins (newest date first, then highest version) */
+  var rs=(d.releases||[]).filter(function(r){return r.url&&/^SunshineOS_.+_Release_.+\.iso$/.test(r.file||"")});
+  rs.sort(function(a,b){return String(b.date).localeCompare(String(a.date))||String(b.version).localeCompare(String(a.version),undefined,{numeric:true})});
   if(!rs.length)throw 0;
-  var top=rs[0];$("#releases").hidden=false;$$(".rl").forEach(function(a){a.hidden=false});
-  var lab=top.name||top.tag_name;$("#relpilltext").textContent=(/sunshine/i.test(lab)?lab:"Sunshine OS "+lab)+" is available";$("#relpill").hidden=false;
-  var done=false;
-  rs.forEach(function(rel){
-    if(done)return;var as=rel.assets||[],
-      isos=as.filter(function(a){return /\.iso$/i.test(a.name)}),
-      parts=as.filter(function(a){return /\.iso\.part/i.test(a.name)}).sort(function(a,b){return a.name<b.name?-1:1}),
-      sum=as.filter(function(a){return /\.sha256$/i.test(a.name)});
-    if(!isos.length&&!parts.length)return;done=true;
-    var label=(rel.name||rel.tag_name),sm=$("#dlsm");
-    $("#dlinfo").textContent="Latest ISO: "+label+", published "+fd(rel.published_at)+".";
-    if(isos.length){
-      var a=isos[0];$("#dlbtn").href=a.browser_download_url;$("#dlbtntext").textContent=label+" (x86_64) · "+mb(a.size);
-      sm.innerHTML=(sum[0]?'<a href="'+esc(sum[0].browser_download_url)+'">SHA-256</a>':"")+'<a href="'+esc(rel.html_url)+'">Release notes</a>';
-    }else{
-      var tot=parts.reduce(function(n,a){return n+a.size},0);
-      $("#dlbtn").href=parts[0].browser_download_url;$("#dlbtntext").textContent="Part 1 of "+parts.length+" · "+mb(tot)+" total";
-      $("#parts").hidden=false;var ul=$("#partlist");ul.innerHTML="";
-      parts.concat(sum).forEach(function(a){var li=document.createElement("li");li.innerHTML='<a class="ln" href="'+esc(a.browser_download_url)+'">'+esc(a.name)+"</a> ("+mb(a.size)+")";ul.appendChild(li)});
-      sm.innerHTML='<a href="'+esc(rel.html_url)+'">Release notes</a>';
-    }
-  });
-  if(!done){$("#dlinfo").textContent="No release with an ISO has been published yet.";$("#dlbtntext").textContent="Open the releases page";}
+  var top=rs[0];isoUrl=top.url;btn.href=top.url;
+  $("#releases").hidden=false;$$(".rl").forEach(function(a){a.hidden=false});
+  var lab="Sunshine OS "+top.version;$("#relpilltext").textContent=lab+" is available";$("#relpill").hidden=false;
+  $("#dlinfo").textContent="Latest ISO: "+lab+", published "+fd(top.date)+".";
+  $("#dlbtntext").textContent=lab+" (x86_64) · "+mb(top.size);
+  $("#dlsm").innerHTML='<a href="'+esc(FILES+top.dir+"/")+'">All files</a><span title="'+esc(top.sha256)+'">SHA-256 '+esc(top.sha256.slice(0,12))+'&hellip;</span>';
   var ul=$("#newslist");ul.innerHTML="";
   rs.slice(0,6).forEach(function(r){
-    var body=(r.body||"").split(/\r?\n/).map(function(l){return l.replace(/^[#>*\-\s]+/,"").trim()}).filter(Boolean)[0]||((r.assets||[]).length+" files attached");
     var li=document.createElement("li");li.className="rv";
-    li.innerHTML='<a href="'+esc(r.html_url)+'"><time datetime="'+esc(r.published_at)+'">'+esc(fd(r.published_at))+'</time><span class="ti">'+esc(r.name||r.tag_name)+'</span><span class="ex">'+esc(body)+"</span></a>";
+    li.innerHTML='<a href="'+esc(FILES+r.dir+"/")+'"><time datetime="'+esc(r.date)+'">'+esc(fd(r.date))+'</time><span class="ti">Sunshine OS '+esc(r.version)+'</span><span class="ex">'+esc(mb(r.size))+", SHA-256 "+esc(r.sha256.slice(0,12))+"&hellip;</span></a>";
     ul.appendChild(li);rio.observe(li);
   });
 }).catch(function(){
   $("#dlinfo").textContent="No release has been published yet. You can build the ISO yourself, see below.";
-  $("#dlbtntext").textContent="Open the releases page";
+  $("#dlbtntext").textContent="Download the ISO";
   $("#newslist").innerHTML='<li style="padding:20px 0;color:var(--text-secondary);font-size:14px">No releases yet.</li>';
 });
 })();
