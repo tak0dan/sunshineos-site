@@ -115,7 +115,6 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
 #logo{position:absolute;left:0;top:0;width:var(--S);height:calc(var(--S) * 76 / 64);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
 /* the line under the sun reaches below the stage: keep a clear gap (28px) between the end of the line and the paragraph */
 .stage{margin-bottom:calc(var(--c) * 9 - 8px)}
-#spikes{position:absolute;left:calc(var(--c) * 15);top:calc(var(--c) * 56.2);width:calc(var(--c) * 33.0667);height:calc(var(--c) * 17.8667);image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none}
 /* the cut-out strip: base state is the finished look; with JS the strip is hidden until the build-up has finished */
 .band{position:absolute;left:0;right:0;top:calc(50% - var(--G) / 2);height:var(--G);background:color-mix(in srgb,var(--field-bg) 94%,transparent)}
 .edge{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brand) 14%,var(--brand) 86%,transparent);opacity:.7}
@@ -328,7 +327,7 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
   <canvas id="px" aria-hidden="true"></canvas>
   <div class="col">
     <a class="pill" id="relpill" href="#releases" hidden><span id="relpilltext"></span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
-    <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="76"></canvas><canvas id="spikes" width="124" height="67" aria-hidden="true"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
+    <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="76"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
     <h1 class="sr-only">Sunshine OS</h1>
     <p class="d">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
     <div class="cta">
@@ -651,51 +650,19 @@ Field($("#px"),hero,{intro:true,interactive:true});
   var stage=$("#stage"), cv=$("#logo"), ctx=cv.getContext("2d");
   var CROP={x:9,y:3}, N=64, NH=76, MID=32, BAND=10, CUT_AT=4.7, CUT_DUR=1.1, base="assets/logo-anim/";
   ctx.imageSmoothingEnabled=false;
-  /* the lower half of the sun is the hand-drawn mock itself: sunlow.png holds its pixels, sunlow-meta.png says which part (disc / spike / line) each pixel is and in what order it grows */
-  var sk=$("#spikes"), sctx=sk.getContext("2d"), LOW=null, SKST=[[4,5],[8,5],[11,5],[14,5]];
-  function loadLow(){
-    return Promise.all([img(base+"sunlow.png"),img(base+"sunlow-meta.png")]).then(function(a){
-      var w=a[0].width,h=a[0].height,c=document.createElement("canvas");c.width=w;c.height=h;var x=c.getContext("2d");
-      x.drawImage(a[0],0,0);var col=x.getImageData(0,0,w,h).data;x.clearRect(0,0,w,h);x.drawImage(a[1],0,0);
-      LOW={w:w,h:h,col:col,meta:x.getImageData(0,0,w,h).data};
-    }).catch(function(){LOW=null});
-  }
-  function skState(intro,i){   /* phi: disc fill angle (deg, 99 = whole), t2: spike/line clock (-1 none, 99 all), dis: dissolve 0..1 */
-    function sweep(f){return 8+86*(function(x){x=Math.min(1,Math.max(0,x));return x*x*(3-2*x)})(f/15)}
-    if(intro){
-      if(i<128)return{phi:-1,t2:-1,dis:0}; if(i<144)return{phi:sweep(i-128),t2:-1,dis:0}; if(i<170)return{phi:99,t2:i-144,dis:0}; return{phi:99,t2:99,dis:0};
-    }
-    if(i<46)return{phi:99,t2:99,dis:0}; if(i<60)return{phi:99,t2:25-(i-46)*(22/13),dis:0};
-    if(i<81)return{phi:99,t2:-1,dis:(i-59)/22}; if(i<148)return{phi:-1,t2:-1,dis:0};
-    if(i<164)return{phi:sweep(i-148),t2:-1,dis:0}; if(i<190)return{phi:99,t2:i-164,dis:0}; return{phi:99,t2:99,dis:0};
-  }
-  function drawSpikes(intro,i){
-    if(!LOW){sctx.clearRect(0,0,sk.width,sk.height);return}
-    var S=skState(intro,i), d=sctx.createImageData(LOW.w,LOW.h), o=d.data, m=LOW.meta, c=LOW.col, n=LOW.w*LOW.h;
-    function prog(st,du){var p=S.t2>=99?1:Math.min(1,Math.max(0,(S.t2-st+1)/du));return 1-(1-p)*(1-p)}
-    var P=[0,0,prog(4,5),prog(8,5),prog(11,5),prog(14,5),prog(16,10)];
-    for(var q=0;q<n;q++){
-      var k=q*4; if(!m[k+3])continue; var g=m[k], key=m[k+1]/255, on=false;
-      if(g===1){on=S.phi>=0&&key*90<=S.phi; if(on&&S.dis>0){var x=q%LOW.w,y=(q/LOW.w)|0,h=(((x*73856093)^(y*19349663))>>>0)%1000/1000;on=h>S.dis}}
-      else if(S.t2>=0&&P[g]>0)on=key<=P[g]+1e-6;
-      if(on){o[k]=c[k];o[k+1]=c[k+1];o[k+2]=c[k+2];o[k+3]=255}
-    }
-    sctx.putImageData(d,0,0);
-  }
-  var V="?v=20261113c"; /* bump to force every browser to re-fetch the logo sheets */
+  var V="?v=20261113d"; /* bump to force every browser to re-fetch the logo sheets */
   function img(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src+(src.indexOf("logo-pixel")<0?V:"")})}
   function ease(x){x=Math.min(1,Math.max(0,x));return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
   function cutRows(t){return reduce?BAND:Math.round(BAND*ease((t-CUT_AT)/CUT_DUR))}
   function fallback(){img("assets/logo-pixel.png").then(function(i){ctx.drawImage(i,0,0,N,N);cut(BAND);stage.classList.add("lines");setTimeout(function(){stage.classList.add("cut")},500)})}
   function cut(rows){if(rows>0){var y0=Math.floor(MID-rows/2);ctx.clearRect(0,y0,N,rows)}}
   fetch(base+"sprite-lite.json"+V).then(function(r){return r.json()}).then(function(m){
-    return Promise.all([img(base+m.intro.file),img(base+m.loop.file),loadLow()]).then(function(im){
+    return Promise.all([img(base+m.intro.file),img(base+m.loop.file)]).then(function(im){
       var fw=m.frame_w,fh=m.frame_h,cols=m.cols,fps=m.fps,introDur=m.intro.frames/fps,last="",vis=true,start=0;
       function draw(sheet,i,t){
         ctx.clearRect(0,0,N,NH);
         ctx.drawImage(sheet,(i%cols)*fw+CROP.x,Math.floor(i/cols)*fh+CROP.y,N,NH,0,0,N,NH);
         cut(cutRows(t));
-        drawSpikes(sheet===im[0],i);
       }
       if(reduce){stage.classList.remove("js");draw(im[0],m.intro.frames-1,99);return}
       start=performance.now();window.SUNSHINE_T0=start;
