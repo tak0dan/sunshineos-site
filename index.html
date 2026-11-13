@@ -100,7 +100,7 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
 #px,#fpx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .hero .col{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 72px;text-align:center}
 .hero .col>*{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
-.hero .col>:nth-child(2){animation-delay:.05s}.hero .col>:nth-child(3){animation-delay:1.2s}.hero .col>:nth-child(4){animation-delay:1.35s}.hero .col>:nth-child(5){animation-delay:1.5s}
+.hero .col>:nth-child(2){animation-delay:.05s}.hero .col>:nth-child(3){animation-delay:1.2s}.hero .col>:nth-child(4){animation-delay:1.35s}.hero .col>:nth-child(5){animation-delay:1.5s}.hero .col>:nth-child(6){animation-delay:1.65s}.hero .col>:nth-child(7){animation-delay:1.8s}
 .pill{display:inline-flex;max-width:100%;align-items:center;gap:8px;border:1px solid color-mix(in srgb,var(--brand) 40%,transparent);background:color-mix(in srgb,var(--bg) 60%,transparent);padding:6px 14px;font-size:13px;line-height:1.4;color:var(--brand);text-decoration:none;transition:color .15s,background-color .15s,border-color .15s;margin-bottom:28px}
 .pill:hover{background:var(--brand);color:var(--bg);border-color:var(--brand)}
 .pill svg{width:16px;height:16px;flex:none}
@@ -138,7 +138,10 @@ header.nav.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);backdro
   100%{scale:1 1;opacity:.7;translate:0 0}
 }
 #wm{position:absolute;left:50%;transform:translateX(-50%)}
+.hero h2.hh{margin-top:36px;max-width:40rem;font-size:clamp(22px,3.2vw,30px);line-height:1.2;font-weight:600;letter-spacing:-.01em;color:var(--text);text-wrap:balance}
+.hero h2.hh+p.d{margin-top:16px;max-width:44rem;text-wrap:pretty}
 .hero p.d{margin-top:36px;max-width:40rem;color:var(--text-secondary);font-size:15px;line-height:1.75;text-wrap:balance}
+.hero p.d.tag{margin-top:18px;max-width:44rem}.hero p.d.tag strong{color:var(--text);font-weight:600}
 .cta{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 
 /* sections */
@@ -329,7 +332,9 @@ footer .bot{margin-top:48px;padding-top:24px;border-top:1px solid var(--border-s
     <a class="pill" id="relpill" href="#releases" hidden><span id="relpilltext"></span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 5.75L20.25 12L14 18.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M19.5 12H3.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg></a>
     <div class="stage js" id="stage" role="img" aria-label="Sunshine OS"><canvas id="halo" width="104" height="76" aria-hidden="true"></canvas><i class="band"></i><canvas id="logo" width="64" height="76"></canvas><i class="edge e1"></i><i class="edge e2"></i><canvas id="wm"></canvas></div>
     <h1 class="sr-only">Sunshine OS</h1>
-    <p class="d">An operating system based on Arch Linux. It works from the terminal and from a graphical desktop, with btrfs snapshots, system repair tools and a considered design.</p>
+    <h2 class="hh">A beautiful desktop. A system built to work.</h2>
+    <p class="d">Sunshine OS combines the freedom and freshness of Arch Linux with the convenience of a carefully configured desktop experience. Get the latest packages, a unified software store, an intuitive Hyprland desktop and a complete set of tools for system maintenance and recovery. From graphical application management to Btrfs snapshots and dedicated repair utilities, everything is designed to make your everyday computing experience both enjoyable and dependable.</p>
+    <p class="d tag"><strong>Beautiful on the surface. Thoughtfully engineered underneath.</strong></p>
     <div class="cta">
       <a class="btn primary" href="#install"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Download</a>
       <a class="btn secondary" href="#tools"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 22V2L22 12L5 22Z" fill="currentColor"/></svg>See the tools</a>
