@@ -1,0 +1,22 @@
+{
+  "editions": [
+    {
+      "name": "Sol",
+      "main": true,
+      "tagline": {"en": "The main edition. Tested, stable, installable on btrfs or ext4.", "uk": "Основна збірка. Перевірена, стабільна, встановлюється на btrfs або ext4."},
+      "about": {"en": "Arch Linux with KDE Plasma and the Sunshine tools, snapshots and the Hyprland desktop. This is the one to install on your own computer.", "uk": "Arch Linux з KDE Plasma, інструментами Sunshine, знімками системи та стільницею Hyprland. Це та збірка, яку варто ставити на власний комп'ютер."},
+      "screenshots": [
+        {"src": "assets/desktop.jpg", "caption": {"en": "Desktop wallpaper", "uk": "Шпалери стільниці"}},
+        {"src": "assets/login.jpg", "caption": {"en": "Login wallpaper", "uk": "Шпалери входу"}}
+      ]
+    },
+    {
+      "name": "Sirius",
+      "tagline": {"en": "The declarative branch: packages and services described in one place. Still being tested.", "uk": "Декларативна гілка: пакунки та служби описуються в одному місці. Ще тестується."},
+      "about": {"en": "Everything of Sol, plus the Nix package manager (service enabled), the Sunshine Store running on UNI (pacman, AUR, Flatpak, AppImage in your own order of preference) and an automatic NixOS entry in the GRUB menu. It can still break: do not install it on a machine you rely on.", "uk": "Усе, що є в Sol, плюс менеджер пакунків Nix (служба ввімкнена), Sunshine Store на основі UNI (pacman, AUR, Flatpak, AppImage у вашому порядку пріоритету) та автоматичний пункт NixOS у меню GRUB. Вона ще може ламатися: не встановлюйте її на комп'ютер, на який покладаєтеся."},
+      "screenshots": [
+        {"src": "assets/sirius-desktop.jpg", "caption": {"en": "Live session: the Welcome window", "uk": "Живий сеанс: вікно привітання"}}
+      ]
+    }
+  ]
+}

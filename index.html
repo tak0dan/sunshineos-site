@@ -212,6 +212,7 @@ kbd{border:1px solid var(--border-strong);padding:2px 6px;font-size:11px;color:v
 .row .m{margin-top:8px;max-width:28rem;font-size:13px;line-height:1.6;color:var(--text-muted)}
 .dl{display:flex;flex-direction:column;align-items:flex-start}
 .dl .btn{height:44px}
+.dl #alled{margin-top:16px;height:40px}
 .dl .sm{margin-top:8px;display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--text-muted)}
 .dl .sm a{color:var(--text-muted);text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:4px}
 .dl .sm a:hover{color:var(--text);text-decoration-color:var(--brand)}
@@ -400,12 +401,8 @@ a.lang{width:auto;padding:0 10px;font:500 13px "JetBrains Mono",ui-monospace,mon
         <div class="dl">
           <a class="btn primary" id="dlbtn" href="https://github.com/tak0dan/SunshineOS/releases"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 14.75V20.25H3.75V14.75M12 3.75L12 14M8.5 11.5L12 15L15.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg><span id="dlbtntext">Checking the latest ISO&hellip;</span></a>
           <span class="sm" id="dlsm"></span>
+          <a class="btn secondary" id="alled" href="editions/">All editions</a>
         </div>
-      </div>
-      <div class="row" id="edrow" hidden>
-        <div><h4>Other editions</h4>
-          <p class="d">Branches of Sunshine OS that are still being tested. They can break: do not install them on a machine you rely on.</p></div>
-        <div><ul id="edlist" style="list-style:none;margin:0;padding:0"></ul></div>
       </div>
       <div class="row">
         <div><h4><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.75" y="3.75" width="16.5" height="12" stroke="currentColor" stroke-width="1.5"/><path d="M8 20.25H16M12 15.75V20.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>Write it to a USB stick</h4>
@@ -847,17 +844,6 @@ fetch("release.json",{cache:"no-cache"})
     try{history.replaceState(null,"",location.pathname+"#install")}catch(e){}
     setTimeout(function(){location.assign(top.url)},700);
   }
-  /* other editions (Sirius, ...): the newest entry of every edition and channel, linked through the same Worker with ?edition=&channel= */
-  var seen={},eds=(d.releases||[]).filter(function(r){return r.url&&r.edition&&r.edition!=="Sol"&&(r.parts||[]).length});
-  eds.sort(function(a,b){return String(b.date).localeCompare(String(a.date))});
-  var el=$("#edlist");el.innerHTML="";
-  eds.forEach(function(r){
-    var k=r.edition+"/"+r.channel;if(seen[k])return;seen[k]=1;
-    var sz=r.parts.reduce(function(a,p){return a+(p.size||0)},0),li=document.createElement("li");li.style.padding="8px 0";
-    li.innerHTML='<a href="'+esc(r.url+"?edition="+encodeURIComponent(r.edition)+"&channel="+encodeURIComponent(r.channel))+'"><strong>'+esc(r.edition)+" "+esc(r.version)+"</strong> ("+esc(r.channel)+") &middot; "+esc(mb(sz))+" &middot; "+esc(fd(r.date))+'</a><br><span class="sm" title="'+esc(r.sha256)+'">SHA-256 '+esc((r.sha256||"").slice(0,12))+"&hellip; &middot; <code>"+esc(r.file)+"</code></span>";
-    el.appendChild(li);
-  });
-  $("#edrow").hidden=!el.children.length;
   var ul=$("#newslist");ul.innerHTML="";
   rs.slice(0,6).forEach(function(r){
     var li=document.createElement("li");li.className="rv";
