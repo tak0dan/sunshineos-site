@@ -87,14 +87,19 @@ P = [
   '<h3>Оновлення</h3><p>Таймер користувача повідомляє про доступні оновлення. <code>sunshine-update</code> виконує їх у терміналі із запитом пароля polkit, а <code>sunshine-cleanup</code> безпечно звільняє місце на диску.</p>'),
  ('<h3>Phone and AirPods</h3><p>KDE Connect pairs a phone for files, notifications and clipboard. AirPods report battery for each pod and the case, with noise control.</p>',
   '<h3>Телефон і AirPods</h3><p>KDE Connect з’єднує телефон для файлів, сповіщень і буфера обміну. AirPods показують заряд кожного навушника й кейса, з керуванням шумом.</p>'),
- ('<a href="#tools">System tools</a></h2><p class="sub">Commands included for checking and repairing the system. Output captured from a test install.</p>',
+ ('<a href="#tools">System tools</a></h2><p class="sub">Commands included for checking and repairing the system. Animated from the real output of the tools.</p>',
   '<a href="#tools">Системні інструменти</a></h2><p class="sub">Команди для перевірки та відновлення системи. Вивід записано з тестового встановлення.</p>'),
  ('<p>Check identity, package manager, desktop, boot and restore points. <code>--fix</code> repairs.</p>', '<p>Перевіряє ідентичність, менеджер пакетів, середовище, завантаження та точки відновлення. <code>--fix</code> виправляє.</p>'),
  ('<p>List, create or delete restore points (btrfs snapshots).</p>', '<p>Показує, створює або видаляє точки відновлення (знімки btrfs).</p>'),
  ('<p>Repair initramfs, kernel image, GRUB and the boot menu.</p>', '<p>Відновлює initramfs, образ ядра, GRUB і меню завантаження.</p>'),
  ('<p>Repair locks, keyring, mirrors and databases.</p>', '<p>Відновлює блокування, в’язку ключів, дзеркала та бази даних.</p>'),
  ('<p>Free disk space: old package files, unused packages (asks first), old logs, old restore points.</p>', '<p>Звільняє місце: старі файли пакетів, невикористані пакети (спитає), старі журнали, старі точки відновлення.</p>'),
- ('<p>Run system updates from a terminal with a polkit prompt.</p>', '<p>Запускає оновлення системи з терміналу із запитом polkit.</p>'),
+ ('<p>Ranks the mirrors with rate-mirrors, then runs the system update from a terminal with a polkit prompt. Friendly messages and animations can be switched off in <code>/etc/sunshine/tools.conf</code>.</p>',
+  '<p>Ранжує дзеркала через rate-mirrors, потім виконує оновлення системи в терміналі із запитом пароля polkit. Привітні повідомлення й анімації можна вимкнути в <code>/etc/sunshine/tools.conf</code>.</p>'),
+ ('<div class="cmd"><b>sunshine-diagnose</b><p>A full system diagnosis written to <code>~/Sunshine-Diagnostics</code> (the newest 20 are kept), run 10 minutes after each login and after every update.</p></div>',
+  '<div class="cmd"><b>sunshine-diagnose</b><p>Повна діагностика системи записується в <code>~/Sunshine-Diagnostics</code> (зберігаються 20 найновіших); запускається через 10 хвилин після кожного входу та після кожного оновлення.</p></div>'),
+ ('<div class="cmd"><b>sunshine-restore-visuals</b><p>Pull the latest themes and configs from the assets repository and apply them. Offline, it applies the installed ones.</p></div>',
+  '<div class="cmd"><b>sunshine-restore-visuals</b><p>Завантажує найновіші теми й конфіги з репозиторію ресурсів і застосовує їх. Без інтернету застосовує вже встановлені.</p></div>'),
  ('<p>Check the Sunshine OS identity. A pacman hook runs it after every update of the filesystem package.</p>', '<p>Перевіряє ідентичність Sunshine OS. Хук pacman запускає її після кожного оновлення пакета filesystem.</p>'),
  ('<p>Print system information, for support requests.</p>', '<p>Виводить відомості про систему для звернень по допомогу.</p>'),
  ('<a href="#specs">Specifications</a></h2><p class="sub">The components that make up the system.</p>', '<a href="#specs">Складові системи</a></h2><p class="sub">Компоненти, з яких складається система.</p>'),
@@ -158,6 +163,9 @@ P = [
  ('https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine" rel="noopener">The full-scale invasion<', 'https://uk.wikipedia.org/wiki/Російське_вторгнення_в_Україну_(з_2022)" rel="noopener">Повномасштабне вторгнення<'),
 ]
 out = src
+_ua = open(os.path.join(root, 'tools', 'demos-uk.js'), encoding='utf-8').read()
+_a = out.index('var DEMOS={'); _b = out.index('};\nvar pre=') + 2
+out = out[:_a] + _ua + out[_b:]
 for en, ua in P:
     n = out.count(en)
     if n < 1:
