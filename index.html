@@ -231,7 +231,7 @@ pre.code{max-width:100%;padding:14px 16px;background:var(--surface);border:1px s
 .term2 .bar i{width:9px;height:9px;background:var(--border-strong);display:inline-block}
 .term2 pre{padding:20px 22px;min-height:440px;font:400 14px/1.7 "JetBrains Mono",monospace;white-space:pre-wrap;overflow-x:auto}
 .term2 pre::after{content:"";display:inline-block;width:.6em;height:1.1em;background:var(--brand);vertical-align:-.2em;animation:blink 1.1s steps(1) infinite}
-.term2 .p{color:var(--brand)}.term2 .ok{color:var(--ok)}.term2 .wn{color:var(--brand)}.term2 .sec{font-weight:700}.term2 .d{color:var(--text-muted)}.term2 .sun{display:block;line-height:1.25}
+.term2 .p{color:var(--brand)}.term2 .ok{color:var(--ok)}.term2 .wn{color:var(--brand)}.term2 .sec{font-weight:700}.term2 .d{color:var(--text-muted)}.term2 .sun{display:block;line-height:1.05;font-size:13px;margin:6px 0 10px}
 .cmds{display:grid;gap:0 32px;margin-top:32px;border-top:1px solid var(--border-subtle)}
 @media(min-width:768px){.cmds{grid-template-columns:1fr 1fr}}
 .cmd{padding:16px 0;border-bottom:1px solid var(--border-subtle)}
@@ -465,8 +465,8 @@ cd SunshineOS
       <div class="cmd"><b>sunshine-boot-repair</b><p>Repair initramfs, kernel image, GRUB and the boot menu.</p></div>
       <div class="cmd"><b>sunshine-fix-pacman</b><p>Repair locks, keyring, mirrors and databases.</p></div>
       <div class="cmd"><b>sunshine-cleanup</b><p>Free disk space: old package files, unused packages (asks first), old logs, old restore points.</p></div>
-      <div class="cmd"><b>sunshine-update</b><p>Ranks the mirrors with rate-mirrors, then runs the system update from a terminal with a polkit prompt. Friendly messages and animations can be switched off in <code>/etc/sunshine/tools.conf</code>.</p></div>
-      <div class="cmd"><b>sunshine-identity</b><p>Check the Sunshine OS identity. A pacman hook runs it after every update of the filesystem package.</p></div>
+      <div class="cmd"><b>sunshine-update</b><p>Ranks the mirrors with rate-mirrors, then runs the full update from a terminal with a polkit prompt: system packages, AUR, Flatpak and, on Sirius, Nix. Friendly messages and animations can be switched off in <code>/etc/sunshine/tools.conf</code>.</p></div>
+      <div class="cmd"><b>sunshine-identity</b><p>Check the Sunshine OS identity; <code>--fix</code> repairs it. A pacman hook runs it after every update of the filesystem package.</p></div>
       <div class="cmd"><b>sunshine-diagnose</b><p>A full system diagnosis written to <code>~/Sunshine-Diagnostics</code> (the newest 20 are kept), run 10 minutes after each login and after every update.</p></div>
       <div class="cmd"><b>sunshine-restore-visuals</b><p>Pull the latest themes and configs from the assets repository and apply them. Offline, it applies the installed ones.</p></div>
       <div class="cmd"><b>sunshine-info</b><p>Print system information, for support requests.</p></div>
@@ -610,7 +610,7 @@ if(reduce)tt.textContent=full;else{var tio=new IntersectionObserver(function(es)
 /* terminal demos */
 var DEMOS={
  update:{title:"user@sunshine:~", lines:[
-  ["p", "$ sunshine-update"],["d", "(asks for your password with polkit, then runs in this window)"],[""],["sec", "☀ Sunshine OS update"],["ok", "✔ ☕ [sunshine] repository OK (signed, first in the list)"],[""],["sec", "☀ Refreshing the mirror list"],["anim", "Ranking the Arch mirrors with rate-mirrors", 1700, "ok", "✔ ☕ arch mirrors ranked"],["anim", "Ranking the Chaotic-AUR mirrors", 1100, "ok", "✔ ☕ chaotic-aur mirrors ranked"],[""],["sec", "☀ Checking for updates"],["", "37 package update(s) available."],["ok", "✔ ☕ Restore points are made automatically before and after the update"],[""],["sec", "☀ Updating system packages"],["d", ":: Synchronizing package databases..."],["d", "(37/37) Performing snapper post snapshots..."],["ok", "✔ ☕ System packages are up to date"],["sun"],["wn", "All done. Have a warm cup of tea and enjoy the sunshine ☀️🍵"]]},
+  ["p", "$ sunshine-update"],["d", "(asks for your password with polkit, then runs in this window)"],[""],["sec", "☀ Sunshine OS update"],["ok", "✔ ☕ [sunshine] repository OK (signed, first in the list)"],[""],["sec", "☀ Refreshing the mirror list"],["anim", "Ranking the Arch mirrors with rate-mirrors", 1700, "ok", "✔ ☕ arch mirrors ranked"],["anim", "Ranking the Chaotic-AUR mirrors", 1100, "ok", "✔ ☕ chaotic-aur mirrors ranked"],[""],["sec", "☀ Checking for updates"],["", "37 package update(s) available."],["ok", "✔ ☕ Restore points are made automatically before and after the update"],[""],["sec", "☀ Updating system packages"],["d", ":: Synchronizing package databases..."],["d", "(37/37) Performing snapper post snapshots..."],["ok", "✔ ☕ System packages are up to date"],[""],["sec", "☀ Updating Flatpak apps"],["d", "Nothing to do."],["sec", "☀ Updating AUR (community) packages"],["d", ":: Looking for devel upgrades... nothing to do"],[""],["sec", "☀ Tidying up"],["ok", "✔ ☕ Old package cache cleaned"],["sun"],["wn", "All done. Have a warm cup of tea and enjoy the sunshine ☀️🍵"]]},
  doctor:{title:"user@sunshine:~", lines:[
   ["p", "$ sunshine-doctor"],["d", "Sunshine OS doctor  (check only; add --fix to repair)"],[""],["sec", "☀ Identity"],["ok", "  ✔ this is Sunshine OS (Sunshine OS)"],[""],["sec", "☀ Package manager"],["ok", "  ✔ no lock file"],["ok", "  ✔ package keyring present"],["ok", "  ✔ package database consistent"],["ok", "  ✔ no pending .pacnew files"],["ok", "  ✔ [sunshine] repository is configured"],[""],["sec", "☀ Desktop"],["ok", "  ✔ icon font is the tested version (4.0.0-1)"],[""],["sec", "☀ Boot"],["ok", "  ✔ kernel image present"],["ok", "  ✔ initramfs present"],["ok", "  ✔ kernel image fully allocated (GRUB can read it)"],["ok", "  ✔ GRUB menu present"],["ok", "  ✔ EFI partition mounted"],[""],["sec", "☀ Restore points"],["ok", "  ✔ snapper configured for /"],["ok", "  ✔ snapper-timeline.timer enabled"],["ok", "  ✔ grub-btrfsd.service enabled"],["ok", "  ✔ automatic snapshot before/after every update (snap-pac)"],[""],["ok", "All good"]]},
  diag:{title:"user@sunshine:~", lines:[
@@ -622,7 +622,7 @@ var DEMOS={
  snap:{title:"user@sunshine:~", lines:[
   ["p", "$ sudo pacman -S --noconfirm --needed cowsay"],["d", "(3/3) Performing snapper post snapshots for the following configurations..."],["d", "==> root: 3"],[""],["p", "$ sudo snapper -c root list"],["", "0 │ single │       │ current"],["", "1 │ single │       │ Fresh install"],["", "2 │ pre    │       │ pacman -S --noconfirm --needed cowsay"],["", "3 │ post   │     2 │ cowsay"],[""],["wn", "Something broke? Reboot, pick \"Sunshine OS snapshots\" in the boot menu,"],["wn", "then restore from Btrfs Assistant."]]},
  id:{title:"user@sunshine:~", lines:[
-  ["p", "$ sunshine-identity check"],["ok", "Identity OK: Sunshine OS"],[""],["p", "$ head -3 /etc/os-release"],["", "NAME=\"Sunshine OS\""],["", "PRETTY_NAME=\"Sunshine OS\""],["", "ID=sunshineos"],[""],["d", "A pacman hook runs this after every update of the filesystem package."],["d", "Without it, an update would turn the system back into plain \"Arch Linux\"."]]}
+  ["p", "$ sunshine-identity check"],["ok", "Identity OK: Sunshine OS"],[""],["p", "$ sunshine-identity check --fix"],["d", "(repairs the identity if an update changed it)"],[""],["p", "$ head -3 /etc/os-release"],["", "NAME=\"Sunshine OS\""],["", "PRETTY_NAME=\"Sunshine OS\""],["", "ID=sunshineos"],[""],["d", "A pacman hook runs this after every update of the filesystem package."],["d", "Without it, an update would turn the system back into plain \"Arch Linux\"."]]}
 };
 var pre=document.getElementById("tpre"), ttl=document.getElementById("ttl"), run=0;
 function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
@@ -641,9 +641,10 @@ function play(name){
         if(Date.now()-t0>=ms){ span.className=L[3]; span.textContent=L[4]; pre.appendChild(document.createTextNode("\n")); after(160); return; }
         var g=""; for(var j=0;j<12;j++) g+=BARS[(f+j*3+(j%4)*2)%BARS.length]; span.textContent=g+"  "+txt; f++; setTimeout(tick,90); })();
     }
-    else if(cls==="sun"){    // the Sunshine animation after a successful run
-      var frames=["      \\   |   /","       .-\"\"\"-.","   -- (   ☀   ) --","       '-...-'","      /   |   \\"], cols=["#ff9654","#ffb061","#ffc43d","#ffd27a","#ffc43d","#ffb061"], n=0, tot=reduce?1:15;
-      (function glow(){ if(my!==run) return; span.style.color=cols[n%cols.length]; span.textContent=frames.join("\n"); if(++n<tot) setTimeout(glow,80); else { pre.appendChild(document.createTextNode("\n")); after(200);} })();
+    else if(cls==="sun"){    // the Sunshine animation after a successful run: a braille sun, rings of colour travelling outwards
+      var art=["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠰⣦⣄⠀⠀⠘⣧⡀⠀⣿⣿⠀⢀⣼⠃⠀⠀⣠⣴⠆⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠀⠙⢿⣷⣤⡀⢻⡷⠀⠿⠿⠀⢾⡟⢀⣤⣾⡿⠋⠀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⣀⠀⠀⠻⣿⠛⠀⢀⣠⣤⣤⣄⡀⠀⠛⣿⠟⠀⠀⣀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠉⠻⢿⡶⠀⢀⣾⣿⣿⣿⣿⣿⣿⣷⡀⠀⢶⡿⠟⠉⠀⠀⠀⠀⠀", "⠀⢀⣀⣠⣤⣤⣤⣤⡄⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⢠⣤⣤⣤⣤⣄⣀⡀⠀", "⠀⠈⠉⠙⠛⠛⠛⠛⠃⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠘⠛⠛⠛⠛⠋⠉⠁⠀", "⠀⠀⠀⠀⠀⣀⣴⣾⠷⠀⠈⢿⣿⣿⣿⣿⣿⣿⡿⠁⠀⠾⣷⣦⣀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠉⠀⠀⣴⣿⣤⠀⠈⠙⠛⠛⠋⠁⠀⣤⣿⣦⠀⠀⠉⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠀⣠⣾⡿⠛⠁⣼⡷⠀⣶⣶⠀⢾⣧⠈⠛⢿⣷⣄⠀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠰⠟⠋⠀⠀⢠⡟⠁⠀⣿⣿⠀⠈⢻⡄⠀⠀⠙⠻⠆⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀", "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"], pal=["#c2460f","#ff7a1a","#ff9654","#ffb061","#ffc43d","#ffd27a","#ffc43d","#ffb061","#ff9654","#ff7a1a"], n=0, tot=reduce?1:28, mid=art.length/2;
+      span.className="sun";
+      (function glow(){ if(my!==run) return; var h=""; for(var q=0;q<art.length;q++){ h+='<span style="color:'+pal[(Math.round(Math.abs(q-mid))+n)%pal.length]+'">'+art[q]+'</span>\n'; } span.innerHTML=h; if(++n<tot) setTimeout(glow,70); else after(200); })();
     }
     else { span.innerHTML=esc(txt); pre.appendChild(document.createTextNode("\n")); after(120); }
   }
