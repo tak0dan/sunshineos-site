@@ -1,0 +1,33 @@
+# Keeps release.json in step with the releases of tak0dan/SunshineOS, so nothing has to be edited after a release.
+# The download button and the Cloudflare Worker read release.json; this job rewrites it from the GitHub releases list.
+name: release-json
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sunshine-release]
+permissions:
+  contents: write
+concurrency:
+  group: release-json
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate release.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: tak0dan/SunshineOS
+        run: python3 tools/gen-release-json.py release.json
+      - name: Commit when it changed
+        run: |
+          git config user.name "sunshine-release-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if ! git diff --quiet -- release.json; then
+            git add release.json
+            git commit -m "release.json: follow the GitHub releases"
+            git push
+          fi
