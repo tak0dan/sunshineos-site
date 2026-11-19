@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "version": "0.3",
+      "edition": "Sirius",
+      "channel": "Testing",
+      "date": "2026-11-19",
+      "tag": "v0.3-sirius-testing-2026-11-19",
+      "file": "SunshineOS-Sirius_0.3_Testing_2026-11-19.iso",
+      "size": 3528212480,
+      "sha256": "518f764d6733d97acbd591a699b78ad790d820998dc3c7c29a220d6ae2481307",
+      "url": "https://sunshineos-download.sunshineos.workers.dev/",
+      "parts": [
+        {
+          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v0.3-sirius-testing-2026-11-19/SunshineOS-Sirius_0.3_Testing_2026-11-19.iso.part1",
+          "size": 1992294400
+        },
+        {
+          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v0.3-sirius-testing-2026-11-19/SunshineOS-Sirius_0.3_Testing_2026-11-19.iso.part2",
+          "size": 1535918080
+        }
+      ]
+    },
+    {
       "version": "13.4.7.1.5",
       "edition": "Sol",
       "channel": "Release",
