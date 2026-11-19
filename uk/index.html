@@ -869,7 +869,7 @@ fetch("../release.json",{cache:"no-cache"})
   $("#dlbtntext").textContent=lab+" ("+arch+") · "+mb(top.size);
   /* the USB command uses the real file name from release.json; replace sdX with your USB stick */
   $("#ddcmd").textContent="cd ~/Downloads\nsudo dd if="+top.file+" of=/dev/sdX bs=4M status=progress oflag=sync";
-  $("#dlsm").innerHTML='<a href="'+esc(RELS+top.tag)+'">'+tr("All files")+'</a><span title="'+esc(top.sha256)+'">SHA-256 '+esc(top.sha256.slice(0,12))+'&hellip;</span>';
+  $("#dlsm").innerHTML='<a href="'+esc(top.link||RELS+top.tag)+'">'+tr("All files")+'</a><span title="'+esc(top.sha256)+'">SHA-256 '+esc(top.sha256.slice(0,12))+'&hellip;</span>';
   /* README button: https://…/sunshineos-site/?download=1#install starts the download from here, the visitor stays on this page */
   if(/[?&]download=1/.test(location.search)){
     $("#dlsm").textContent=tr("Your download is starting. Look in your browser's downloads.");
@@ -879,7 +879,7 @@ fetch("../release.json",{cache:"no-cache"})
   var ul=$("#newslist");ul.innerHTML="";
   rs.slice(0,6).forEach(function(r){
     var li=document.createElement("li");li.className="rv";
-    li.innerHTML='<a href="'+esc(RELS+r.tag)+'"><time datetime="'+esc(r.date)+'">'+esc(fd(r.date))+'</time><span class="ti">Sunshine OS '+esc(r.version)+'</span><span class="ex">'+esc(mb(r.size))+", SHA-256 "+esc(r.sha256.slice(0,12))+"&hellip;</span></a>";
+    li.innerHTML='<a href="'+esc(r.link||RELS+r.tag)+'"><time datetime="'+esc(r.date)+'">'+esc(fd(r.date))+'</time><span class="ti">Sunshine OS '+esc(r.version)+'</span><span class="ex">'+esc(mb(r.size))+", SHA-256 "+esc(r.sha256.slice(0,12))+"&hellip;</span></a>";
     ul.appendChild(li);rio.observe(li);
   });
 }).catch(function(){

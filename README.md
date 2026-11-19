@@ -105,3 +105,7 @@ python3 -m http.server 8000
 [Bucha](https://en.wikipedia.org/wiki/Bucha_massacre) · [Irpin](https://en.wikipedia.org/wiki/Battle_of_Irpin) · [Crimea](https://en.wikipedia.org/wiki/Annexation_of_Crimea_by_the_Russian_Federation) · [Donetsk and Luhansk](https://en.wikipedia.org/wiki/War_in_Donbas) · [Crimean Tatars](https://en.wikipedia.org/wiki/Deportation_of_the_Crimean_Tatars) · [Abducted children](https://en.wikipedia.org/wiki/Deportation_of_Ukrainian_children_to_Russia) · [War crimes](https://en.wikipedia.org/wiki/Russian_war_crimes) · [The full-scale invasion](https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine)
 
 <p align="center"><b>#StayWithUkraine</b> &nbsp;·&nbsp; <b>#russiaIsATerroristState</b></p>
+
+## Releases
+
+`release.json` is generated from the GitHub releases of the Sunshine OS repository by the workflow `release-json` (`tools/gen-release-json.py`); do not edit it by hand. To list an ISO hosted elsewhere, declare it in `releases/declared.json`. Full guide: [docs/RELEASING.md](https://github.com/tak0dan/SunshineOS/blob/main/docs/RELEASING.md).
