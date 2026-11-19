@@ -1,6 +1,27 @@
 {
   "releases": [
     {
+      "version": "13.4.7.1.5",
+      "edition": "Sol",
+      "channel": "Release",
+      "date": "2026-11-19",
+      "tag": "v13.4.7.1.5-release-2026-11-19",
+      "file": "SunshineOS_13.4.7.1.5_Release_2026-11-19.iso",
+      "size": 3514859520,
+      "sha256": "9cb5bc4c9353bac04f3ed867600752e9dd21e2c83d5bb75a91ad4b87be44a7a5",
+      "url": "https://sunshineos-download.sunshineos.workers.dev/",
+      "parts": [
+        {
+          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v13.4.7.1.5-release-2026-11-19/SunshineOS_13.4.7.1.5_Release_2026-11-19.iso.part1",
+          "size": 1992294400
+        },
+        {
+          "url": "https://github.com/tak0dan/SunshineOS/releases/download/v13.4.7.1.5-release-2026-11-19/SunshineOS_13.4.7.1.5_Release_2026-11-19.iso.part2",
+          "size": 1522565120
+        }
+      ]
+    },
+    {
       "version": "13.4.7.1.4",
       "edition": "Sol",
       "channel": "Release",
