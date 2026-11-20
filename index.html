@@ -262,6 +262,16 @@ pre.code{max-width:100%;padding:14px 16px;background:var(--surface);border:1px s
 .news .ti{font-size:16px;font-weight:500;transition:color .15s}
 .news a:hover .ti{color:var(--brand)}
 .news .ex{font-size:13px;line-height:1.6;color:var(--text-secondary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.shots{margin-top:28px;display:grid;gap:14px}
+@media(min-width:640px){.shots{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.shots{grid-template-columns:repeat(3,1fr);gap:18px}}
+.shot{margin:0;background:var(--surface);box-shadow:0 0 0 1px var(--border-subtle);overflow:hidden}
+.shot>a{display:block;background:#101018}
+.shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;transition:opacity .18s}
+.shot>a:hover img{opacity:.86}
+.shot figcaption{display:flex;flex-direction:column;gap:3px;padding:11px 13px 13px}
+.shot figcaption b{font-size:13px;font-weight:600}
+.shot figcaption span{font-size:12px;color:var(--text-secondary)}
 
 /* figures */
 .figs{display:grid;gap:16px}
@@ -535,6 +545,16 @@ cd SunshineOS
         <div class="cmd"><b>Updates that heal themselves</b><p><b>sunshine-update</b> first pulls the newest signed tools (sunshine-toolsync: signed manifest, checksums, rollback), reads the Arch news, refreshes keys first and retries a failed download with a targeted fix. <b>sunshine-migrate</b> applies small one-time fixes to installed systems.</p></div>
         <div class="cmd"><b>Hardware, kernels, games, desktops</b><p>Drivers by hardware (NVIDIA open modules, PRIME, Broadcom, laptop helpers), several kernels side by side (zen, LTS, hardened, CachyOS), a performance profile (zram, I/O schedulers, earlyoom), a gaming setup, and other desktops next to Plasma (GNOME, Xfce, Cinnamon, MATE, LXQt, i3, Sway and more).</p></div>
         <div class="cmd"><b>Fixed</b><p>Boot no longer waits two minutes for a leftover network-online unit (2 min 35 s down to 34 s in a VM). The command-line installer registers sunshine-base and enables the VM guest service. Top bar with a centred clock and no window buttons; start menu without the "More" button; icons no longer red; the splash plays the website animation. The firewall is on by default.</p></div>
+      </div>
+    </div>
+    <div class="gallery" id="gallery"><h3 class="h" style="font-size:18px;margin:28px 0 4px">From the test VM</h3><p class="sub">Unretouched screens from the 13.4.7.1.6 release audit: boot, desktop choice, the Welcome installer and the tools you can use afterwards.</p>
+      <div class="shots">
+        <figure class="shot"><a href="assets/releases/01-grub-menu.jpg" target="_blank" rel="noopener"><img src="assets/releases/01-grub-menu.jpg" alt="Sunshine OS GRUB boot menu in UEFI mode" loading="lazy"></a><figcaption><b>UEFI boot menu</b><span>GRUB, Sol 13.4.7.1.6</span></figcaption></figure>
+        <figure class="shot"><a href="assets/releases/02-boot-splash.jpg" target="_blank" rel="noopener"><img src="assets/releases/02-boot-splash.jpg" alt="Sunshine OS boot splash and console output" loading="lazy"></a><figcaption><b>Boot splash and console</b><span>first seconds of the live session</span></figcaption></figure>
+        <figure class="shot"><a href="assets/releases/03-desktop-choice.jpg" target="_blank" rel="noopener"><img src="assets/releases/03-desktop-choice.jpg" alt="Desktop selection screen offering Sunshine Hyprland or Plasma" loading="lazy"></a><figcaption><b>Hyprland or Plasma</b><span>desktop choice at login</span></figcaption></figure>
+        <figure class="shot"><a href="assets/releases/04-welcome-installer.jpg" target="_blank" rel="noopener"><img src="assets/releases/04-welcome-installer.jpg" alt="Welcome window with the Install Sunshine OS button" loading="lazy"></a><figcaption><b>Welcome and installer</b><span>one click starts Calamares</span></figcaption></figure>
+        <figure class="shot"><a href="assets/releases/05-terminal-tools.jpg" target="_blank" rel="noopener"><img src="assets/releases/05-terminal-tools.jpg" alt="Terminal running Sunshine OS system tools" loading="lazy"></a><figcaption><b>System tools</b><span>check and repair from the terminal</span></figcaption></figure>
+        <figure class="shot"><a href="assets/releases/06-terminal-prompt.jpg" target="_blank" rel="noopener"><img src="assets/releases/06-terminal-prompt.jpg" alt="Privilege prompt shown in the same terminal window" loading="lazy"></a><figcaption><b>Prompt in the terminal</b><span>no hidden second password window</span></figcaption></figure>
       </div>
     </div>
     <ul class="news" id="newslist"><li style="padding:20px 0;color:var(--text-secondary);font-size:14px">Looking up releases&hellip;</li></ul>

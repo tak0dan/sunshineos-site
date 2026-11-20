@@ -262,6 +262,16 @@ pre.code{max-width:100%;padding:14px 16px;background:var(--surface);border:1px s
 .news .ti{font-size:16px;font-weight:500;transition:color .15s}
 .news a:hover .ti{color:var(--brand)}
 .news .ex{font-size:13px;line-height:1.6;color:var(--text-secondary);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.shots{margin-top:28px;display:grid;gap:14px}
+@media(min-width:640px){.shots{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.shots{grid-template-columns:repeat(3,1fr);gap:18px}}
+.shot{margin:0;background:var(--surface);box-shadow:0 0 0 1px var(--border-subtle);overflow:hidden}
+.shot>a{display:block;background:#101018}
+.shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;transition:opacity .18s}
+.shot>a:hover img{opacity:.86}
+.shot figcaption{display:flex;flex-direction:column;gap:3px;padding:11px 13px 13px}
+.shot figcaption b{font-size:13px;font-weight:600}
+.shot figcaption span{font-size:12px;color:var(--text-secondary)}
 
 /* figures */
 .figs{display:grid;gap:16px}
@@ -535,6 +545,16 @@ cd SunshineOS
         <div class="cmd"><b>Оновлення, що лікують себе</b><p><b>sunshine-update</b> спершу бере найновіші підписані інструменти (sunshine-toolsync: підписаний маніфест, контрольні суми, відкат), читає новини Arch, першими оновлює ключі й повторює невдале завантаження з цілеспрямованим виправленням. <b>sunshine-migrate</b> застосовує невеликі одноразові виправлення до встановлених систем.</p></div>
         <div class="cmd"><b>Обладнання, ядра, ігри, стільниці</b><p>Драйвери за обладнанням (відкриті модулі NVIDIA, PRIME, Broadcom, засоби для ноутбуків), кілька ядер поруч (zen, LTS, hardened, CachyOS), профіль продуктивності (zram, планувальники вводу-виводу, earlyoom), налаштування для ігор та інші стільниці поруч із Plasma (GNOME, Xfce, Cinnamon, MATE, LXQt, i3, Sway та інші).</p></div>
         <div class="cmd"><b>Виправлено</b><p>Завантаження більше не чекає дві хвилини на залишковий модуль network-online (з 2 хв 35 с до 34 с у віртуальній машині). Встановлювач командного рядка реєструє sunshine-base і вмикає гостьову службу ВМ. Верхня панель із годинником по центру та без кнопок вікон; меню «Пуск» без кнопки «More»; піктограми більше не червоні; заставка показує анімацію з сайту. Брандмауер увімкнено за замовчуванням.</p></div>
+      </div>
+    </div>
+    <div class="gallery" id="gallery"><h3 class="h" style="font-size:18px;margin:28px 0 4px">З тестової віртуальної машини</h3><p class="sub">Необроблені екрани з аудиту випуску 13.4.7.1.6: завантаження, вибір середовища, інсталятор Welcome та інструменти, якими можна скористатися після встановлення.</p>
+      <div class="shots">
+        <figure class="shot"><a href="../assets/releases/01-grub-menu.jpg" target="_blank" rel="noopener"><img src="../assets/releases/01-grub-menu.jpg" alt="Меню завантаження GRUB Sunshine OS у режимі UEFI" loading="lazy"></a><figcaption><b>Меню завантаження UEFI</b><span>GRUB, Sol 13.4.7.1.6</span></figcaption></figure>
+        <figure class="shot"><a href="../assets/releases/02-boot-splash.jpg" target="_blank" rel="noopener"><img src="../assets/releases/02-boot-splash.jpg" alt="Заставка завантаження та вивід консолі Sunshine OS" loading="lazy"></a><figcaption><b>Заставка завантаження та консоль</b><span>перші секунди живого сеансу</span></figcaption></figure>
+        <figure class="shot"><a href="../assets/releases/03-desktop-choice.jpg" target="_blank" rel="noopener"><img src="../assets/releases/03-desktop-choice.jpg" alt="Екран вибору середовища: Sunshine Hyprland або Plasma" loading="lazy"></a><figcaption><b>Hyprland або Plasma</b><span>вибір середовища під час входу</span></figcaption></figure>
+        <figure class="shot"><a href="../assets/releases/04-welcome-installer.jpg" target="_blank" rel="noopener"><img src="../assets/releases/04-welcome-installer.jpg" alt="Вікно Welcome з кнопкою встановлення Sunshine OS" loading="lazy"></a><figcaption><b>Вікно Welcome й інсталятор</b><span>один клік запускає Calamares</span></figcaption></figure>
+        <figure class="shot"><a href="../assets/releases/05-terminal-tools.jpg" target="_blank" rel="noopener"><img src="../assets/releases/05-terminal-tools.jpg" alt="Термінал із системними інструментами Sunshine OS" loading="lazy"></a><figcaption><b>Системні інструменти</b><span>перевірка й відновлення з терміналу</span></figcaption></figure>
+        <figure class="shot"><a href="../assets/releases/06-terminal-prompt.jpg" target="_blank" rel="noopener"><img src="../assets/releases/06-terminal-prompt.jpg" alt="Запит підвищення привілеїв у тому самому вікні терміналу" loading="lazy"></a><figcaption><b>Запит пароля в терміналі</b><span>без прихованого другого вікна</span></figcaption></figure>
       </div>
     </div>
     <ul class="news" id="newslist"><li style="padding:20px 0;color:var(--text-secondary);font-size:14px">Шукаємо випуски&hellip;</li></ul>
